@@ -32,36 +32,84 @@ function SellerDetailPage() {
         ← Satıcılara dön
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-        {/* LEFT */}
-        <div>
-          <div className="mb-8 h-80 rounded-[2.5rem] bg-gradient-to-br from-[#edf3fa] to-[#dbe7f2]" />
-
-          <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
-            {satici.kategori}
-          </p>
-
-          <h1 className="mb-6 text-6xl font-light tracking-tight text-gray-900">
-            {satici.isim}
-          </h1>
-
-          <p className="mb-8 text-lg font-light leading-9 text-gray-600">
-            {satici.aciklama}
-          </p>
-
-          <div className="flex flex-wrap gap-2">
-            {satici.etiketler.map((etiket) => (
-              <span
-                key={etiket}
-                className="rounded-full bg-[#edf3fa] px-4 py-2 text-sm text-[#4e7bab]"
-              >
-                {etiket}
-              </span>
-            ))}
-          </div>
+      <div className="relative mb-16">
+        <div className="overflow-hidden rounded-[2.5rem]">
+          <img
+            src={satici.kapakGorseli}
+            alt={`${satici.isim} kapak görseli`}
+            className="h-72 w-full object-cover md:h-96"
+          />
         </div>
 
-        {/* RIGHT */}
+        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
+          <div className="card-soft h-24 w-24 overflow-hidden rounded-2xl border-4 border-white bg-white md:h-28 md:w-28">
+            <img
+              src={satici.logo}
+              alt={`${satici.isim} logo`}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto mb-12 max-w-3xl pt-6 text-center">
+        <span className="mb-4 inline-block rounded-full bg-[#edf3fa] px-4 py-1.5 text-sm text-[#4e7bab]">
+          {satici.kategori}
+        </span>
+
+        <h1 className="mb-3 text-5xl font-light tracking-tight text-gray-900 md:text-6xl">
+          {satici.isim}
+        </h1>
+
+        <p className="mb-6 text-sm text-gray-500">{satici.sehir}</p>
+
+        <p className="text-lg font-light leading-9 text-gray-600">
+          {satici.aciklama}
+        </p>
+      </div>
+
+      <div className="mb-16 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href={satici.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-2xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
+        >
+          Instagram
+        </a>
+
+        <a
+          href={satici.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-2xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
+        >
+          WhatsApp
+        </a>
+
+        <a
+          href={satici.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-2xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
+        >
+          Web Sitesi
+        </a>
+      </div>
+
+      <div className="mb-16 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="card-soft rounded-[2rem] bg-white p-8 md:p-10">
+          <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
+            Hikaye
+          </p>
+
+          <h2 className="mb-6 text-3xl font-light text-gray-900">
+            Markanın arkasındaki yolculuk
+          </h2>
+
+          <p className="font-light leading-8 text-gray-600">{satici.hikaye}</p>
+        </div>
+
         <aside className="card-soft h-fit rounded-[2rem] bg-white p-8">
           <h2 className="mb-6 text-2xl font-light text-gray-900">
             Satıcı Bilgileri
@@ -69,30 +117,63 @@ function SellerDetailPage() {
 
           <div className="space-y-5 text-sm">
             <div>
-              <p className="mb-1 text-gray-400">Şehir</p>
+              <p className="mb-1 text-gray-400">Konum</p>
+              <p className="text-gray-700">{satici.konum}</p>
+            </div>
 
+            <div>
+              <p className="mb-1 text-gray-400">Şehir</p>
               <p className="text-gray-700">{satici.sehir}</p>
             </div>
 
             <div>
-              <p className="mb-1 text-gray-400">Kategori</p>
-
-              <p className="text-gray-700">{satici.kategori}</p>
+              <p className="mb-1 text-gray-400">Kuruluş Yılı</p>
+              <p className="text-gray-700">{satici.kurulusYili}</p>
             </div>
 
             <div>
-              <p className="mb-1 text-gray-400">Platform Modeli</p>
-
-              <p className="text-gray-700">
-                Komisyonsuz yönlendirme sistemi
-              </p>
+              <p className="mb-1 text-gray-400">Kategori</p>
+              <p className="text-gray-700">{satici.kategori}</p>
             </div>
           </div>
 
-          <button className="mt-8 w-full rounded-2xl bg-[#4e7bab] px-6 py-4 text-white transition hover:bg-[#6b91b9]">
-            Satıcının Kanalına Git
-          </button>
+          <div className="mt-8 flex flex-wrap gap-2 border-t border-[#eef3f8] pt-6">
+            {satici.etiketler.map((etiket) => (
+              <span
+                key={etiket}
+                className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]"
+              >
+                {etiket}
+              </span>
+            ))}
+          </div>
         </aside>
+      </div>
+
+      <div className="card-soft overflow-hidden rounded-[2rem] bg-[#4e7bab] px-10 py-16 text-white">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="mb-4 text-sm uppercase tracking-[0.2em] text-blue-100">
+            Doğrudan Satıcıya Ulaşın
+          </p>
+
+          <h2 className="mb-6 text-4xl font-light leading-tight">
+            {satici.isim} ile tanışmaya hazır mısınız?
+          </h2>
+
+          <p className="mb-8 text-lg font-light leading-8 text-blue-50">
+            Ürünleri inceleyin, koleksiyonları keşfedin ve satıcının resmi
+            kanalına tek tıkla geçiş yapın.
+          </p>
+
+          <a
+            href={satici.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block rounded-2xl bg-white px-8 py-4 text-[#4e7bab] transition hover:bg-gray-100"
+          >
+            Satıcının kanalına git
+          </a>
+        </div>
       </div>
     </div>
   );
