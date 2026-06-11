@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  font-family: "Montserrat", system-ui, sans-serif;
+  background: #fcfcfc;
+  color: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #fcfcfc;
+  color: #1f2937;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.card-soft {
+  border: 1px solid #eef3f8;
+  box-shadow: 0 8px 30px rgba(78, 123, 171, 0.06);
+}
+
+.text-brand {
+  color: #4e7bab;
+}
+
+.bg-brand {
+  background-color: #4e7bab;
+}
+
+.bg-brand:hover {
+  background-color: #6b91b9;
+}
+
+.border-soft {
+  border-color: #eef3f8;
+}
