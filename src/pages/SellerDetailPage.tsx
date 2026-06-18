@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import SellerImage from "../components/SellerImage";
 import { saticilar } from "../data/mockData";
 
 function SellerDetailPage() {
@@ -33,22 +34,23 @@ function SellerDetailPage() {
       </Link>
 
       <div className="relative mb-16">
-        <div className="overflow-hidden rounded-[2.5rem]">
-          <img
-            src={satici.kapakGorseli}
-            alt={`${satici.isim} kapak görseli`}
-            className="h-72 w-full object-cover md:h-96"
-          />
-        </div>
+        <SellerImage
+          src={satici.kapakGorseli}
+          alt={`${satici.isim} kapak görseli`}
+          label={satici.isim}
+          loading="eager"
+          className="h-72 w-full rounded-[2.5rem] md:h-96"
+        />
 
         <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
-          <div className="card-soft h-24 w-24 overflow-hidden rounded-2xl border-4 border-white bg-white md:h-28 md:w-28">
-            <img
-              src={satici.logo}
-              alt={`${satici.isim} logo`}
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <SellerImage
+            src={satici.logo}
+            alt={`${satici.isim} logo`}
+            label={satici.isim}
+            variant="logo"
+            loading="eager"
+            className="card-soft h-24 w-24 rounded-2xl border-4 border-white bg-white md:h-28 md:w-28"
+          />
         </div>
       </div>
 

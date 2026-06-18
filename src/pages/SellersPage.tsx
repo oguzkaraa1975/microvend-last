@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import SellerImage from "../components/SellerImage";
 import { kategoriler, saticilar } from "../data/mockData";
 
 function slugdanKategoriIsim(slug: string | null) {
@@ -226,7 +227,13 @@ function SellersPage() {
                   className="card-soft rounded-[2rem] bg-white p-7 transition hover:-translate-y-1 hover:border-[#a5bed6]"
                 >
                   <div className="mb-5 flex items-start gap-4">
-                    <div className="h-16 w-16 rounded-2xl bg-[#edf3fa]" />
+                    <SellerImage
+                      src={satici.logo}
+                      alt={`${satici.isim} logo`}
+                      label={satici.isim}
+                      variant="logo"
+                      className="h-16 w-16 shrink-0 rounded-2xl border border-[#eef3f8]"
+                    />
 
                     <div>
                       <p className="mb-1 text-sm text-[#4e7bab]">

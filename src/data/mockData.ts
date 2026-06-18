@@ -40,7 +40,7 @@ export const saticilar: Satici[] = [
     etiketler: ["Seramik", "El yapımı", "Minimal"],
     kapakGorseli:
       "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1600&q=80",
-    logo: "https://images.unsplash.com/photo-1578746353430-b0968754cc13?auto=format&fit=crop&w=200&h=200&q=80",
+    logo: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=200&h=200&q=80",
     instagram: "https://instagram.com/lunaatolye",
     whatsapp: "https://wa.me/905321234567",
     website: "https://lunaatolye.com",
@@ -59,7 +59,7 @@ export const saticilar: Satici[] = [
       "Doğal ahşap ve premium dekoratif yaşam ürünleri üreten butik marka.",
     etiketler: ["Ahşap", "Dekorasyon", "Doğal"],
     kapakGorseli:
-      "https://images.unsplash.com/photo-1616046229472-7d476e6222c9?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80",
     logo: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=200&h=200&q=80",
     instagram: "https://instagram.com/northcrafttr",
     whatsapp: "https://wa.me/905331234567",
@@ -120,7 +120,7 @@ export const saticilar: Satici[] = [
     etiketler: ["Takı", "Minimal", "El yapımı"],
     kapakGorseli:
       "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1600&q=80",
-    logo: "https://images.unsplash.com/photo-1611591437281-460bfac7a2c2?auto=format&fit=crop&w=200&h=200&q=80",
+    logo: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=200&h=200&q=80",
     instagram: "https://instagram.com/ateliermoni",
     whatsapp: "https://wa.me/905361234567",
     website: "https://ateliermoni.com",

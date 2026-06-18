@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SectionHeading from "./SectionHeading";
+import SellerImage from "./SellerImage";
 
 type Seller = {
   isim: string;
@@ -8,6 +9,8 @@ type Seller = {
   sehir: string;
   aciklama: string;
   etiketler: string[];
+  kapakGorseli: string;
+  logo: string;
 };
 
 type FeaturedSellersProps = {
@@ -23,12 +26,12 @@ function FeaturedSellers({ saticilar }: FeaturedSellersProps) {
           title="Kendi alanında seçilmiş mikro markalar."
         />
 
-        <a
-          href="/saticilar"
+        <Link
+          to="/saticilar"
           className="pb-2 text-sm text-[#4e7bab] transition hover:text-[#6b91b9]"
         >
           Tüm satıcıları gör
-        </a>
+        </Link>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -37,7 +40,12 @@ function FeaturedSellers({ saticilar }: FeaturedSellersProps) {
             key={satici.isim}
             className="card-soft overflow-hidden rounded-[2rem] bg-white transition hover:-translate-y-1 hover:border-[#a5bed6]"
           >
-            <div className="h-48 bg-gradient-to-br from-[#edf3fa] to-[#dbe7f2]" />
+            <SellerImage
+              src={satici.kapakGorseli}
+              alt={`${satici.isim} kapak görseli`}
+              label={satici.isim}
+              className="h-48"
+            />
 
             <div className="p-7">
               <div className="mb-5 flex items-start justify-between gap-4">
@@ -55,7 +63,13 @@ function FeaturedSellers({ saticilar }: FeaturedSellersProps) {
                   </p>
                 </div>
 
-                <div className="h-12 w-12 shrink-0 rounded-2xl bg-[#edf3fa]" />
+                <SellerImage
+                  src={satici.logo}
+                  alt={`${satici.isim} logo`}
+                  label={satici.isim}
+                  variant="logo"
+                  className="h-12 w-12 shrink-0 rounded-2xl border border-[#eef3f8]"
+                />
               </div>
 
               <p className="mb-6 font-light leading-7 text-gray-600">
