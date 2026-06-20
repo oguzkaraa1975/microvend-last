@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Hero() {
   return (
     <section className="relative overflow-hidden">
@@ -21,13 +23,19 @@ function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <button className="rounded-2xl bg-[#4e7bab] px-7 py-4 text-sm text-white shadow-[0_10px_30px_rgba(78,123,171,0.20)] transition hover:bg-[#6b91b9]">
+            <Link
+              to="/saticilar"
+              className="inline-block rounded-2xl bg-[#4e7bab] px-7 py-4 text-sm text-white shadow-[0_10px_30px_rgba(78,123,171,0.20)] transition hover:bg-[#6b91b9]"
+            >
               Satıcıları Keşfet
-            </button>
+            </Link>
 
-            <button className="rounded-2xl border border-[#dbe7f2] bg-white px-7 py-4 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]">
+            <Link
+              to="/basvuru"
+              className="inline-block rounded-2xl border border-[#dbe7f2] bg-white px-7 py-4 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
+            >
               Satıcı Başvurusu
-            </button>
+            </Link>
           </div>
 
           <div className="mt-14 flex items-center gap-10 text-sm text-gray-500">
@@ -83,9 +91,12 @@ function Hero() {
                 </span>
               </div>
 
-              <button className="rounded-xl border border-[#dbe7f2] px-4 py-2 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]">
+              <Link
+                to="/saticilar/luna-atolye"
+                className="inline-block rounded-xl border border-[#dbe7f2] px-4 py-2 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
+              >
                 İncele
-              </button>
+              </Link>
             </div>
           </div>
 

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function CTA() {
   return (
     <section className="mx-auto max-w-7xl px-6 pb-24">
@@ -16,9 +18,12 @@ function CTA() {
             müşterileri kendi satış kanallarınıza yönlendirin.
           </p>
 
-          <button className="rounded-2xl bg-white px-7 py-4 text-[#4e7bab] transition hover:bg-gray-100">
+          <Link
+            to="/basvuru"
+            className="inline-block rounded-2xl bg-white px-7 py-4 text-[#4e7bab] transition hover:bg-gray-100"
+          >
             Hemen Başvur
-          </button>
+          </Link>
         </div>
       </div>
     </section>

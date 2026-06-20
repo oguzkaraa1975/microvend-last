@@ -54,7 +54,7 @@ function Header() {
             to="/basvuru"
             className="rounded-xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
           >
-            Giriş Yap
+            Başvuru Yap
           </Link>
 
           <Link

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Pricing() {
   const paketler = [
     {
@@ -61,9 +63,12 @@ function Pricing() {
               ))}
             </ul>
 
-            <button className="w-full rounded-2xl border border-gray-300 px-5 py-3 text-sm transition hover:bg-gray-100">
+            <Link
+              to="/basvuru"
+              className="block w-full rounded-2xl border border-gray-300 px-5 py-3 text-center text-sm transition hover:bg-gray-100"
+            >
               Paketi İncele
-            </button>
+            </Link>
           </div>
         ))}
       </div>

@@ -10,6 +10,7 @@ import SellerDetailPage from "./pages/SellerDetailPage";
 import PricingPage from "./pages/PricingPage";
 import ApplyPage from "./pages/ApplyPage";
 import AboutPage from "./pages/AboutPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/ucretlendirme" element={<PricingPage />} />
             <Route path="/basvuru" element={<ApplyPage />} />
             <Route path="/hakkimizda" element={<AboutPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
 
