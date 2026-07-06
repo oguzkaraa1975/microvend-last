@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { categories } from "../data/mockData";
 import usePageTitle from "../hooks/usePageTitle";
@@ -37,6 +37,14 @@ function ApplyPage() {
   const [hataMesaji, setHataMesaji] = useState("");
   const [basariMesaji, setBasariMesaji] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
+
+  const mesajRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (hataMesaji || basariMesaji) {
+      mesajRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [hataMesaji, basariMesaji]);
 
   const alaniGuncelle = (
     alan: keyof BasvuruFormu,
@@ -120,18 +128,6 @@ function ApplyPage() {
         </p>
       </div>
 
-      {basariMesaji && (
-        <div className="card-soft mb-8 rounded-[2rem] border-[#dbe7f2] bg-[#edf3fa] px-6 py-5">
-          <p className="font-light text-[#4e7bab]">{basariMesaji}</p>
-        </div>
-      )}
-
-      {hataMesaji && (
-        <div className="card-soft mb-8 rounded-[2rem] border-red-200 bg-red-50 px-6 py-5">
-          <p className="font-light text-red-700">{hataMesaji}</p>
-        </div>
-      )}
-
       <div className="rounded-[2rem] border border-gray-200 bg-white p-8 md:p-10">
         <form className="grid gap-8" onSubmit={handleSubmit} noValidate>
           <div className="grid gap-6 md:grid-cols-2">
@@ -140,7 +136,7 @@ function ApplyPage() {
                 htmlFor="markaAdi"
                 className="mb-2 block text-sm font-medium text-gray-700"
               >
-                Marka Adı
+                Marka Adı <span className="text-[#4e7bab]">*</span>
               </label>
 
               <input
@@ -160,7 +156,7 @@ function ApplyPage() {
                 htmlFor="adSoyad"
                 className="mb-2 block text-sm font-medium text-gray-700"
               >
-                Ad Soyad
+                Ad Soyad <span className="text-[#4e7bab]">*</span>
               </label>
 
               <input
@@ -182,7 +178,7 @@ function ApplyPage() {
                 htmlFor="email"
                 className="mb-2 block text-sm font-medium text-gray-700"
               >
-                E-Posta
+                E-Posta <span className="text-[#4e7bab]">*</span>
               </label>
 
               <input
@@ -222,7 +218,7 @@ function ApplyPage() {
                 htmlFor="kategori"
                 className="mb-2 block text-sm font-medium text-gray-700"
               >
-                Kategori
+                Kategori <span className="text-[#4e7bab]">*</span>
               </label>
 
               <select
@@ -247,7 +243,7 @@ function ApplyPage() {
                 htmlFor="sehir"
                 className="mb-2 block text-sm font-medium text-gray-700"
               >
-                Şehir
+                Şehir <span className="text-[#4e7bab]">*</span>
               </label>
 
               <input
@@ -308,7 +304,7 @@ function ApplyPage() {
               htmlFor="aciklama"
               className="mb-2 block text-sm font-medium text-gray-700"
             >
-              Kısa Açıklama
+              Kısa Açıklama <span className="text-[#4e7bab]">*</span>
             </label>
 
             <textarea
@@ -322,6 +318,26 @@ function ApplyPage() {
               className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
             />
           </div>
+
+          {basariMesaji && (
+            <div
+              ref={mesajRef}
+              role="status"
+              className="rounded-2xl border border-[#dbe7f2] bg-[#edf3fa] px-5 py-4"
+            >
+              <p className="font-light text-[#4e7bab]">{basariMesaji}</p>
+            </div>
+          )}
+
+          {hataMesaji && (
+            <div
+              ref={mesajRef}
+              role="alert"
+              className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4"
+            >
+              <p className="font-light text-red-700">{hataMesaji}</p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-4 border-t border-gray-100 pt-6 md:flex-row md:items-center md:justify-between">
             <p className="max-w-2xl text-sm leading-6 text-gray-500">
