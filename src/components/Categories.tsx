@@ -7,6 +7,10 @@ type CategoriesProps = {
 };
 
 function Categories({ categories }: CategoriesProps) {
+  const visibleCategories = categories.filter(
+    (category) => category.sellerCount > 0
+  );
+
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -24,7 +28,7 @@ function Categories({ categories }: CategoriesProps) {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        {categories.map((category) => (
+        {visibleCategories.map((category) => (
           <Link
             key={category.id}
             to={`/saticilar?category=${category.slug}`}

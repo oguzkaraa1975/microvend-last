@@ -5,6 +5,10 @@ import usePageTitle from "../hooks/usePageTitle";
 function CategoriesPage() {
   usePageTitle("Kategoriler | Microvend");
 
+  const gorunurKategoriler = categories.filter(
+    (kategori) => kategori.sellerCount > 0
+  );
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-24">
       <div className="mb-12 max-w-3xl">
@@ -24,7 +28,7 @@ function CategoriesPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category) => (
+        {gorunurKategoriler.map((category) => (
           <Link
             key={category.id}
             to={`/saticilar?category=${category.slug}`}

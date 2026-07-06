@@ -22,6 +22,11 @@ function SellersPage() {
 
   const seciliKategori = slugdanKategoriIsim(searchParams.get("category"));
 
+  const gorunurKategoriler = categories.filter(
+    (kategori) =>
+      kategori.sellerCount > 0 || kategori.name === seciliKategori
+  );
+
   const sehirSecenekleri = useMemo(
     () => [...new Set(sellers.map((satici) => satici.city))].sort(),
     []
@@ -139,7 +144,7 @@ function SellersPage() {
               className="w-full rounded-2xl border border-[#dbe7f2] px-4 py-3 font-light outline-none focus:border-[#4e7bab]"
             >
               <option value="">Tüm kategoriler</option>
-              {categories.map((kategori) => (
+              {gorunurKategoriler.map((kategori) => (
                 <option key={kategori.slug} value={kategori.name}>
                   {kategori.name}
                 </option>
