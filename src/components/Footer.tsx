@@ -17,6 +17,10 @@ function Footer() {
               Mikro işletmeler, butik markalar ve bağımsız üreticiler için
               komisyonsuz dijital vitrin platformu.
             </p>
+
+            <p className="mt-3 text-sm font-light leading-6 text-gray-500">
+              İletişim için başvuru formunu kullanabilirsiniz.
+            </p>
           </div>
 
           <nav className="grid grid-cols-2 gap-4 text-sm font-light text-gray-600">
@@ -62,10 +66,17 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-[#eef3f8] pt-6 text-sm font-light text-gray-400 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 microvend</p>
+        <div className="mt-10 border-t border-[#eef3f8] pt-6 text-sm font-light text-gray-400">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <p>© 2026 microvend · Tüm hakları saklıdır.</p>
 
-          <p>Komisyonsuz keşif ve dijital vitrin platformu.</p>
+            <p>Komisyonsuz keşif ve dijital vitrin platformu.</p>
+          </div>
+
+          <p className="mt-4">
+            Başvuru bilgileri yalnızca değerlendirme amacıyla kullanılır ve
+            üçüncü taraflarla paylaşılmaz.
+          </p>
         </div>
       </div>
     </footer>
