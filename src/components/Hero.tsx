@@ -41,20 +41,20 @@ function Hero() {
             </Link>
           </div>
 
-          <div className="mt-14 flex items-center gap-10 text-sm text-gray-500">
-            <div>
-              <p className="text-3xl font-light text-gray-900">500+</p>
-              <p>Bağımsız Satıcı</p>
+          <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-gray-500">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#4e7bab]" />
+              <span>Komisyonsuz vitrin</span>
             </div>
 
-            <div>
-              <p className="text-3xl font-light text-gray-900">20+</p>
-              <p>Kategori</p>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#4e7bab]" />
+              <span>Kategori bazlı keşif</span>
             </div>
 
-            <div>
-              <p className="text-3xl font-light text-gray-900">%0</p>
-              <p>Komisyon</p>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#4e7bab]" />
+              <span>Doğrudan iletişim</span>
             </div>
           </div>
         </div>
@@ -105,14 +105,14 @@ function Hero() {
 
           {/* FLOATING CARD */}
           <div className="card-soft absolute -bottom-10 -left-10 hidden rounded-3xl bg-white p-5 lg:block">
-            <p className="mb-2 text-sm text-gray-500">
-              Bu ay platforma katılan
+            <p className="mb-2 text-sm text-gray-500">Pilot dönemi</p>
+
+            <p className="text-2xl font-light text-gray-900">
+              Başvurular açık
             </p>
 
-            <p className="text-4xl font-light text-gray-900">+128</p>
-
             <p className="mt-2 text-sm text-[#4e7bab]">
-              Yeni mikro işletme
+              Editör onaylı satıcı profilleri
             </p>
           </div>
         </div>
