@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import usePageTitle from "../hooks/usePageTitle";
 
 function NotFoundPage() {
+  usePageTitle("Sayfa bulunamadı | Microvend");
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-24">
       <div className="max-w-2xl">

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { categories } from "../data/mockData";
+import usePageTitle from "../hooks/usePageTitle";
 
 function CategoriesPage() {
+  usePageTitle("Kategoriler | Microvend");
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-24">
       <div className="mb-12 max-w-3xl">

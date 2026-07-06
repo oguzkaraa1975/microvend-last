@@ -1,11 +1,16 @@
 import { Link, useParams } from "react-router-dom";
 import SellerImage from "../components/SellerImage";
 import { sellers } from "../data/mockData";
+import usePageTitle from "../hooks/usePageTitle";
 
 function SellerDetailPage() {
   const { slug } = useParams();
 
   const satici = sellers.find((item) => item.slug === slug);
+
+  usePageTitle(
+    satici ? `${satici.name} | Microvend` : "Satıcı bulunamadı | Microvend"
+  );
 
   if (!satici) {
     return (

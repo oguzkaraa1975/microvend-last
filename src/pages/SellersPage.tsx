@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import SellerImage from "../components/SellerImage";
 import { categories, sellers } from "../data/mockData";
+import usePageTitle from "../hooks/usePageTitle";
 
 function slugdanKategoriIsim(slug: string | null) {
   if (!slug) {
@@ -12,6 +13,8 @@ function slugdanKategoriIsim(slug: string | null) {
 }
 
 function SellersPage() {
+  usePageTitle("Satıcılar | Microvend");
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [aramaMetni, setAramaMetni] = useState("");
   const [seciliSehir, setSeciliSehir] = useState("");

@@ -5,8 +5,11 @@ import HowItWorks from "../components/HowItWorks";
 import CTA from "../components/CTA";
 
 import { categories, sellers } from "../data/mockData";
+import usePageTitle from "../hooks/usePageTitle";
 
 function HomePage() {
+  usePageTitle("Microvend | Mikro işletmeler için dijital vitrin");
+
   return (
     <>
       <Hero />

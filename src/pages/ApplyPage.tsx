@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { categories } from "../data/mockData";
+import usePageTitle from "../hooks/usePageTitle";
 
 type BasvuruFormu = {
   adSoyad: string;
@@ -30,6 +31,8 @@ const emailGecerliMi = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 function ApplyPage() {
+  usePageTitle("Satıcı Başvurusu | Microvend");
+
   const [form, setForm] = useState<BasvuruFormu>(bosForm);
   const [hataMesaji, setHataMesaji] = useState("");
   const [basariMesaji, setBasariMesaji] = useState("");
