@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 function CTA() {
   return (
     <section className="mx-auto max-w-7xl px-6 pb-24">
-      <div className="rounded-[2rem] bg-[#4e7bab] px-10 py-16 text-white">
+      <div className="rounded-[2rem] bg-[#4e7bab] px-6 py-12 text-white md:px-10 md:py-16">
         <div className="max-w-3xl">
           <p className="mb-4 text-sm uppercase tracking-[0.2em] text-blue-100">
             Microvend'e Katılın
           </p>
 
-          <h3 className="mb-6 text-4xl font-light leading-tight">
+          <h3 className="mb-6 text-2xl font-light leading-tight sm:text-3xl md:text-4xl">
             Komisyon ödemeden görünürlüğünüzü artırın.
           </h3>
 

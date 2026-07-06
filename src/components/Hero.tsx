@@ -15,7 +15,7 @@ function Hero() {
             Komisyonsuz Dijital Vitrin Platformu
           </p>
 
-          <h1 className="mb-8 text-6xl font-light leading-tight tracking-tight text-gray-900 lg:text-7xl">
+          <h1 className="mb-8 text-4xl font-light leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
             Mikro işletmeleri görünür hale getirin.
           </h1>
 

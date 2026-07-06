@@ -19,13 +19,13 @@ function HowItWorks() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
-      <div className="rounded-[2.5rem] bg-[#edf3fa] px-10 py-16 md:px-14 md:py-20">
+      <div className="rounded-[2.5rem] bg-[#edf3fa] px-6 py-12 md:px-14 md:py-20">
         <div className="mb-14 max-w-3xl">
           <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
             Nasıl Çalışır?
           </p>
 
-          <h2 className="mb-6 text-5xl font-light leading-tight tracking-tight text-gray-900">
+          <h2 className="mb-6 text-3xl font-light leading-tight tracking-tight text-gray-900 sm:text-4xl md:text-5xl">
             Komisyonsuz, sade ve şeffaf model.
           </h2>
 
@@ -40,7 +40,7 @@ function HowItWorks() {
           {adimlar.map((adim, index) => (
             <div
               key={adim.baslik}
-              className="flex h-full flex-col rounded-[2rem] border border-[#dbe7f2] bg-white p-8 shadow-[0_8px_30px_rgba(78,123,171,0.05)]"
+              className="flex h-full flex-col rounded-[2rem] border border-[#dbe7f2] bg-white p-6 shadow-[0_8px_30px_rgba(78,123,171,0.05)] md:p-8"
             >
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edf3fa] text-sm text-[#4e7bab]">
                 {index + 1}
