@@ -37,7 +37,7 @@ function Pricing() {
           Ücretlendirme
         </p>
 
-        <h3 className="text-4xl font-semibold tracking-tight">
+        <h3 className="text-4xl font-light tracking-tight">
           Küçük işletmeler için sade ve erişilebilir paketler.
         </h3>
       </div>
@@ -48,10 +48,10 @@ function Pricing() {
             key={paket.ad}
             className="rounded-3xl border border-gray-200 bg-white p-7"
           >
-            <h4 className="mb-3 text-2xl font-semibold">{paket.ad}</h4>
+            <h4 className="mb-3 text-2xl font-light">{paket.ad}</h4>
 
             <div className="mb-4 flex items-end gap-2">
-              <span className="text-5xl font-semibold">{paket.fiyat}</span>
+              <span className="text-5xl font-light">{paket.fiyat}</span>
               <span className="pb-2 text-gray-500">/ ay</span>
             </div>
 

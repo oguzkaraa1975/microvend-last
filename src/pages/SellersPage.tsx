@@ -15,16 +15,9 @@ function SellersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [aramaMetni, setAramaMetni] = useState("");
   const [seciliSehir, setSeciliSehir] = useState("");
+  const [siralama, setSiralama] = useState("onerilen");
 
   const seciliKategori = slugdanKategoriIsim(searchParams.get("category"));
-
-  const kategoriSecenekleri = useMemo(
-    () =>
-      categories.filter((kategori) =>
-        sellers.some((satici) => satici.categoryName === kategori.name)
-      ),
-    []
-  );
 
   const sehirSecenekleri = useMemo(
     () => [...new Set(sellers.map((satici) => satici.city))].sort(),
@@ -34,7 +27,7 @@ function SellersPage() {
   const filtrelenmisSaticilar = useMemo(() => {
     const arama = aramaMetni.trim().toLowerCase();
 
-    return sellers.filter((satici) => {
+    const sonuc = sellers.filter((satici) => {
       const kategoriEslesir =
         !seciliKategori || satici.categoryName === seciliKategori;
       const sehirEslesir = !seciliSehir || satici.city === seciliSehir;
@@ -57,7 +50,15 @@ function SellersPage() {
 
       return isimEslesir || aciklamaEslesir || etiketEslesir;
     });
-  }, [aramaMetni, seciliKategori, seciliSehir]);
+
+    if (siralama === "alfabetik-az") {
+      sonuc.sort((a, b) => a.name.localeCompare(b.name, "tr"));
+    } else if (siralama === "alfabetik-za") {
+      sonuc.sort((a, b) => b.name.localeCompare(a.name, "tr"));
+    }
+
+    return sonuc;
+  }, [aramaMetni, seciliKategori, seciliSehir, siralama]);
 
   const handleKategoriChange = (kategoriIsim: string) => {
     if (kategoriIsim) {
@@ -135,7 +136,7 @@ function SellersPage() {
               className="w-full rounded-2xl border border-[#dbe7f2] px-4 py-3 font-light outline-none focus:border-[#4e7bab]"
             >
               <option value="">Tüm kategoriler</option>
-              {kategoriSecenekleri.map((kategori) => (
+              {categories.map((kategori) => (
                 <option key={kategori.slug} value={kategori.name}>
                   {kategori.name}
                 </option>
@@ -183,10 +184,15 @@ function SellersPage() {
               {filtrelenmisSaticilar.length} satıcı listeleniyor
             </p>
 
-            <select className="rounded-2xl border border-[#dbe7f2] bg-white px-4 py-3 text-sm font-light outline-none">
-              <option>Önerilen sıralama</option>
-              <option>En yeni</option>
-              <option>Alfabetik</option>
+            <select
+              aria-label="Sıralama"
+              value={siralama}
+              onChange={(event) => setSiralama(event.target.value)}
+              className="rounded-2xl border border-[#dbe7f2] bg-white px-4 py-3 text-sm font-light outline-none"
+            >
+              <option value="onerilen">Önerilen sıralama</option>
+              <option value="alfabetik-az">Alfabetik A-Z</option>
+              <option value="alfabetik-za">Alfabetik Z-A</option>
             </select>
           </div>
 

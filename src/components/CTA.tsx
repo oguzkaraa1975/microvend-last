@@ -9,7 +9,7 @@ function CTA() {
             Microvend'e Katılın
           </p>
 
-          <h3 className="mb-6 text-4xl font-semibold leading-tight">
+          <h3 className="mb-6 text-4xl font-light leading-tight">
             Komisyon ödemeden görünürlüğünüzü artırın.
           </h3>
 

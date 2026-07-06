@@ -66,7 +66,7 @@ function Hero() {
               <div>
                 <p className="text-sm text-gray-500">Öne Çıkan Satıcı</p>
 
-                <h3 className="mt-1 text-2xl font-semibold">
+                <h3 className="mt-1 text-2xl font-light">
                   {featuredSeller.name}
                 </h3>
               </div>

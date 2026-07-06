@@ -52,13 +52,6 @@ function Header() {
         <div className="hidden items-center gap-3 md:flex">
           <Link
             to="/basvuru"
-            className="rounded-xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
-          >
-            Başvuru Yap
-          </Link>
-
-          <Link
-            to="/basvuru"
             className="rounded-xl bg-[#4e7bab] px-5 py-3 text-sm text-white transition hover:bg-[#6b91b9]"
           >
             Satıcı Ol

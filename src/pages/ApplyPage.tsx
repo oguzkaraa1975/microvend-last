@@ -107,7 +107,7 @@ function ApplyPage() {
           Satıcı Başvurusu
         </p>
 
-        <h1 className="mb-6 text-5xl font-semibold tracking-tight">
+        <h1 className="mb-6 text-5xl font-light tracking-tight">
           Microvend'e katılın.
         </h1>
 

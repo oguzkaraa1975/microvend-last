@@ -9,7 +9,7 @@ function CategoriesPage() {
           Kategoriler
         </p>
 
-        <h1 className="mb-6 text-5xl font-semibold tracking-tight">
+        <h1 className="mb-6 text-5xl font-light tracking-tight">
           Mikro satıcı kategorilerini keşfedin.
         </h1>
 
@@ -25,11 +25,11 @@ function CategoriesPage() {
           <Link
             key={category.id}
             to={`/saticilar?category=${category.slug}`}
-            className="rounded-3xl border border-gray-200 bg-white p-7 transition hover:border-[#4e7bab]"
+            className="group rounded-3xl border border-gray-200 bg-white p-7 transition hover:border-[#4e7bab]"
           >
             <div className="mb-6 h-16 w-16 rounded-2xl bg-[#edf3fa]" />
 
-            <h2 className="mb-3 text-2xl font-semibold">{category.name}</h2>
+            <h2 className="mb-3 text-2xl font-light">{category.name}</h2>
 
             <p className="mb-6 leading-7 text-gray-600">
               {category.description}
