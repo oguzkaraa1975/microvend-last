@@ -9,7 +9,7 @@ function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <Link
           to="/"
-          className="text-3xl font-light tracking-tight text-[#4e7bab]"
+          className="text-xl font-light tracking-wide text-[#4e7bab] md:text-2xl"
           onClick={() => setMenuOpen(false)}
         >
           microvend
