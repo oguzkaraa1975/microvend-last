@@ -157,6 +157,32 @@ function SellerDetailPage() {
         </aside>
       </div>
 
+      {satici.galleryImages.length > 0 && (
+        <div className="mb-16">
+          <div className="mb-8">
+            <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
+              Vitrin
+            </p>
+
+            <h2 className="text-3xl font-light text-gray-900">
+              Vitrinden seçkiler.
+            </h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {satici.galleryImages.map((gorsel) => (
+              <SellerImage
+                key={gorsel.url}
+                src={gorsel.url}
+                alt={gorsel.alt}
+                label={satici.name}
+                className="aspect-[4/3] rounded-[1.5rem]"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="card-soft overflow-hidden rounded-[2rem] bg-[#4e7bab] px-10 py-16 text-white">
         <div className="mx-auto max-w-2xl text-center">
           <p className="mb-4 text-sm uppercase tracking-[0.2em] text-blue-100">

@@ -8,6 +8,11 @@ export type Category = {
   featured: boolean;
 };
 
+export type SellerGalleryImage = {
+  url: string;
+  alt: string;
+};
+
 export type Seller = {
   id: string;
   slug: string;
@@ -20,6 +25,7 @@ export type Seller = {
   story: string;
   coverImage: string;
   logoImage: string;
+  galleryImages: SellerGalleryImage[];
   tags: string[];
   instagramUrl: string;
   whatsappUrl: string;
@@ -48,6 +54,20 @@ export const sellers: Seller[] = [
       "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1600&q=80",
     logoImage:
       "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=200&h=200&q=80",
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1493106641515-6b5631de4bb9?auto=format&fit=crop&w=900&q=80",
+        alt: "El yapımı seramik şekillendirme",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=900&q=80",
+        alt: "Minimalist seramik vazolar",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=80",
+        alt: "Sade seramik servis ürünleri",
+      },
+    ],
     instagramUrl: "https://instagram.com/lunaatolye",
     whatsappUrl: "https://wa.me/905321234567",
     websiteUrl: "https://lunaatolye.com",
@@ -75,6 +95,20 @@ export const sellers: Seller[] = [
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80",
     logoImage:
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=200&h=200&q=80",
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80",
+        alt: "Doğal ahşap yaşam ürünleri",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80",
+        alt: "Modern ev dekorasyonu detayı",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?auto=format&fit=crop&w=900&q=80",
+        alt: "Ahşap doku ve el işçiliği",
+      },
+    ],
     instagramUrl: "https://instagram.com/northcrafttr",
     whatsappUrl: "https://wa.me/905331234567",
     websiteUrl: "https://northcraft.com.tr",
@@ -102,6 +136,20 @@ export const sellers: Seller[] = [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1600&q=80",
     logoImage:
       "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=200&h=200&q=80",
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80",
+        alt: "Butik koleksiyon askısı",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80",
+        alt: "Zamansız tasarım parçaları",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+        alt: "Yavaş moda koleksiyonu",
+      },
+    ],
     instagramUrl: "https://instagram.com/morastudio",
     whatsappUrl: "https://wa.me/905341234567",
     websiteUrl: "https://morastudio.co",
@@ -129,6 +177,20 @@ export const sellers: Seller[] = [
       "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1600&q=80",
     logoImage:
       "https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=200&h=200&q=80",
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",
+        alt: "Mevsim sebzeleri",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=900&q=80",
+        alt: "Doğal ve katkısız ürünler",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=900&q=80",
+        alt: "Yerel üreticiden taze ürünler",
+      },
+    ],
     instagramUrl: "https://instagram.com/verdeorganik",
     whatsappUrl: "https://wa.me/905351234567",
     websiteUrl: "https://verdeorganik.com",
@@ -156,6 +218,20 @@ export const sellers: Seller[] = [
       "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1600&q=80",
     logoImage:
       "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=200&h=200&q=80",
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=900&q=80",
+        alt: "El yapımı takı detayı",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80",
+        alt: "Minimal yüzük tasarımı",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=900&q=80",
+        alt: "Modern küpe koleksiyonu",
+      },
+    ],
     instagramUrl: "https://instagram.com/ateliermoni",
     whatsappUrl: "https://wa.me/905361234567",
     websiteUrl: "https://ateliermoni.com",
@@ -183,6 +259,20 @@ export const sellers: Seller[] = [
       "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80",
     logoImage:
       "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=200&h=200&q=80",
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80",
+        alt: "Sezon koleksiyonundan bir görünüm",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=900&q=80",
+        alt: "Sade kadın giyim parçaları",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1467043237213-65f2da53396f?auto=format&fit=crop&w=900&q=80",
+        alt: "Günlük kullanım için tasarımlar",
+      },
+    ],
     instagramUrl: "https://instagram.com/norawear",
     whatsappUrl: "https://wa.me/905371234567",
     websiteUrl: "https://norawear.com",
