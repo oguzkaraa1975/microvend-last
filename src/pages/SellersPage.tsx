@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import SellerImage from "../components/SellerImage";
 import { kategoriler, saticilar } from "../data/mockData";
@@ -14,14 +14,9 @@ function slugdanKategoriIsim(slug: string | null) {
 function SellersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [aramaMetni, setAramaMetni] = useState("");
-  const [seciliKategori, setSeciliKategori] = useState(() =>
-    slugdanKategoriIsim(searchParams.get("category"))
-  );
   const [seciliSehir, setSeciliSehir] = useState("");
 
-  useEffect(() => {
-    setSeciliKategori(slugdanKategoriIsim(searchParams.get("category")));
-  }, [searchParams]);
+  const seciliKategori = slugdanKategoriIsim(searchParams.get("category"));
 
   const kategoriSecenekleri = useMemo(
     () =>
@@ -63,8 +58,6 @@ function SellersPage() {
   }, [aramaMetni, seciliKategori, seciliSehir]);
 
   const handleKategoriChange = (kategoriIsim: string) => {
-    setSeciliKategori(kategoriIsim);
-
     if (kategoriIsim) {
       const kategori = kategoriler.find((item) => item.isim === kategoriIsim);
 
@@ -79,7 +72,6 @@ function SellersPage() {
 
   const filtreleriTemizle = () => {
     setAramaMetni("");
-    setSeciliKategori("");
     setSeciliSehir("");
     setSearchParams({});
   };
