@@ -40,6 +40,12 @@ function Pricing() {
         <h1 className="text-4xl font-light tracking-tight">
           Küçük işletmeler için sade ve erişilebilir paketler.
         </h1>
+
+        <p className="mt-6 text-sm font-light leading-6 text-gray-500">
+          Pilot döneminde Microvend'e katılım ücretsiz olarak
+          değerlendirilmektedir. Paket fiyatları pilot sonrası dönem için
+          referans niteliğindedir.
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -67,7 +73,7 @@ function Pricing() {
               to="/basvuru"
               className="block w-full rounded-2xl border border-gray-300 px-5 py-3 text-center text-sm transition hover:bg-gray-100"
             >
-              Paketi İncele
+              Başvuruya Geç
             </Link>
           </div>
         ))}

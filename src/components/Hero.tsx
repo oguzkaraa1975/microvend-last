@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import SellerImage from "./SellerImage";
 import { sellers } from "../data/mockData";
 
 function Hero() {
@@ -76,7 +77,13 @@ function Hero() {
               </div>
             </div>
 
-            <div className="mb-6 h-64 rounded-[1.5rem] bg-gradient-to-br from-[#edf3fa] to-[#dbe7f2]" />
+            <SellerImage
+              src={featuredSeller.coverImage}
+              alt={`${featuredSeller.name} kapak görseli`}
+              label={featuredSeller.name}
+              loading="eager"
+              className="mb-6 h-64 rounded-[1.5rem]"
+            />
 
             <p className="mb-6 leading-7 text-gray-600">
               {featuredSeller.shortDescription}

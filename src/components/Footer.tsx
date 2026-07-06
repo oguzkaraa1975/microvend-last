@@ -8,7 +8,7 @@ function Footer() {
           <div>
             <Link
               to="/"
-              className="text-3xl font-light tracking-tight text-[#4e7bab]"
+              className="text-xl font-light tracking-wide text-[#4e7bab] md:text-2xl"
             >
               microvend
             </Link>

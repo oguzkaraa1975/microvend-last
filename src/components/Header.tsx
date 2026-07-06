@@ -60,6 +60,8 @@ function Header() {
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-expanded={menuOpen}
+          aria-controls="mobil-menu"
           className="rounded-xl border border-[#dbe7f2] px-4 py-3 text-sm text-[#4e7bab] md:hidden"
         >
           Menü
@@ -67,7 +69,10 @@ function Header() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-[#eef3f8] bg-white px-6 py-5 md:hidden">
+        <div
+          id="mobil-menu"
+          className="border-t border-[#eef3f8] bg-white px-6 py-5 md:hidden"
+        >
           <nav className="flex flex-col gap-4 text-sm font-light text-gray-700">
             <Link to="/" onClick={() => setMenuOpen(false)}>
               Keşfet
