@@ -4,14 +4,14 @@ import FeaturedSellers from "../components/FeaturedSellers";
 import HowItWorks from "../components/HowItWorks";
 import CTA from "../components/CTA";
 
-import { kategoriler, saticilar } from "../data/mockData";
+import { categories, sellers } from "../data/mockData";
 
 function HomePage() {
   return (
     <>
       <Hero />
-      <Categories kategoriler={kategoriler} />
-      <FeaturedSellers saticilar={saticilar} />
+      <Categories categories={categories} />
+      <FeaturedSellers sellers={sellers} />
       <HowItWorks />
       <CTA />
     </>

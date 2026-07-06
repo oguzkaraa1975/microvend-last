@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { kategoriler } from "../data/mockData";
+import { categories } from "../data/mockData";
 
 type BasvuruFormu = {
   adSoyad: string;
@@ -231,9 +231,9 @@ function ApplyPage() {
                 className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
               >
                 <option value="">Kategori seçin</option>
-                {kategoriler.map((kategori) => (
-                  <option key={kategori.slug} value={kategori.isim}>
-                    {kategori.isim}
+                {categories.map((kategori) => (
+                  <option key={kategori.slug} value={kategori.name}>
+                    {kategori.name}
                   </option>
                 ))}
               </select>

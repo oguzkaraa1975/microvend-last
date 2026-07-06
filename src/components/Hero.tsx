@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { sellers } from "../data/mockData";
 
 function Hero() {
+  const featuredSeller = sellers.find((seller) => seller.featured) ?? sellers[0];
+
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#dfeaf5,transparent_35%)]" />
@@ -64,35 +67,35 @@ function Hero() {
                 <p className="text-sm text-gray-500">Öne Çıkan Satıcı</p>
 
                 <h3 className="mt-1 text-2xl font-semibold">
-                  Luna Atölye
+                  {featuredSeller.name}
                 </h3>
               </div>
 
               <div className="rounded-2xl bg-[#edf3fa] px-4 py-2 text-sm text-[#4e7bab]">
-                El Yapımı
+                {featuredSeller.categoryName}
               </div>
             </div>
 
             <div className="mb-6 h-64 rounded-[1.5rem] bg-gradient-to-br from-[#edf3fa] to-[#dbe7f2]" />
 
             <p className="mb-6 leading-7 text-gray-600">
-              Minimal seramik ürünleri ve modern yaşam objeleri üreten bağımsız
-              tasarım atölyesi.
+              {featuredSeller.shortDescription}
             </p>
 
             <div className="flex items-center justify-between">
               <div className="flex gap-2">
-                <span className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]">
-                  Seramik
-                </span>
-
-                <span className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]">
-                  Minimal
-                </span>
+                {featuredSeller.tags.slice(0, 2).map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
 
               <Link
-                to="/saticilar/luna-atolye"
+                to={`/saticilar/${featuredSeller.slug}`}
                 className="inline-block rounded-xl border border-[#dbe7f2] px-4 py-2 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
               >
                 İncele

@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import SellerImage from "../components/SellerImage";
-import { kategoriler, saticilar } from "../data/mockData";
+import { categories, sellers } from "../data/mockData";
 
 function slugdanKategoriIsim(slug: string | null) {
   if (!slug) {
     return "";
   }
 
-  return kategoriler.find((kategori) => kategori.slug === slug)?.isim ?? "";
+  return categories.find((kategori) => kategori.slug === slug)?.name ?? "";
 }
 
 function SellersPage() {
@@ -20,24 +20,24 @@ function SellersPage() {
 
   const kategoriSecenekleri = useMemo(
     () =>
-      kategoriler.filter((kategori) =>
-        saticilar.some((satici) => satici.kategori === kategori.isim)
+      categories.filter((kategori) =>
+        sellers.some((satici) => satici.categoryName === kategori.name)
       ),
     []
   );
 
   const sehirSecenekleri = useMemo(
-    () => [...new Set(saticilar.map((satici) => satici.sehir))].sort(),
+    () => [...new Set(sellers.map((satici) => satici.city))].sort(),
     []
   );
 
   const filtrelenmisSaticilar = useMemo(() => {
     const arama = aramaMetni.trim().toLowerCase();
 
-    return saticilar.filter((satici) => {
+    return sellers.filter((satici) => {
       const kategoriEslesir =
-        !seciliKategori || satici.kategori === seciliKategori;
-      const sehirEslesir = !seciliSehir || satici.sehir === seciliSehir;
+        !seciliKategori || satici.categoryName === seciliKategori;
+      const sehirEslesir = !seciliSehir || satici.city === seciliSehir;
 
       if (!kategoriEslesir || !sehirEslesir) {
         return false;
@@ -47,9 +47,11 @@ function SellersPage() {
         return true;
       }
 
-      const isimEslesir = satici.isim.toLowerCase().includes(arama);
-      const aciklamaEslesir = satici.aciklama.toLowerCase().includes(arama);
-      const etiketEslesir = satici.etiketler.some((etiket) =>
+      const isimEslesir = satici.name.toLowerCase().includes(arama);
+      const aciklamaEslesir = satici.shortDescription
+        .toLowerCase()
+        .includes(arama);
+      const etiketEslesir = satici.tags.some((etiket) =>
         etiket.toLowerCase().includes(arama)
       );
 
@@ -59,7 +61,7 @@ function SellersPage() {
 
   const handleKategoriChange = (kategoriIsim: string) => {
     if (kategoriIsim) {
-      const kategori = kategoriler.find((item) => item.isim === kategoriIsim);
+      const kategori = categories.find((item) => item.name === kategoriIsim);
 
       if (kategori) {
         setSearchParams({ category: kategori.slug });
@@ -134,8 +136,8 @@ function SellersPage() {
             >
               <option value="">Tüm kategoriler</option>
               {kategoriSecenekleri.map((kategori) => (
-                <option key={kategori.slug} value={kategori.isim}>
-                  {kategori.isim}
+                <option key={kategori.slug} value={kategori.name}>
+                  {kategori.name}
                 </option>
               ))}
             </select>
@@ -220,34 +222,34 @@ function SellersPage() {
                 >
                   <div className="mb-5 flex items-start gap-4">
                     <SellerImage
-                      src={satici.logo}
-                      alt={`${satici.isim} logo`}
-                      label={satici.isim}
+                      src={satici.logoImage}
+                      alt={`${satici.name} logo`}
+                      label={satici.name}
                       variant="logo"
                       className="h-16 w-16 shrink-0 rounded-2xl border border-[#eef3f8]"
                     />
 
                     <div>
                       <p className="mb-1 text-sm text-[#4e7bab]">
-                        {satici.kategori}
+                        {satici.categoryName}
                       </p>
 
                       <h2 className="text-2xl font-light text-gray-900">
-                        {satici.isim}
+                        {satici.name}
                       </h2>
 
                       <p className="mt-1 text-sm text-gray-500">
-                        {satici.sehir}
+                        {satici.city}
                       </p>
                     </div>
                   </div>
 
                   <p className="mb-5 font-light leading-7 text-gray-600">
-                    {satici.aciklama}
+                    {satici.shortDescription}
                   </p>
 
                   <div className="mb-6 flex flex-wrap gap-2">
-                    {satici.etiketler.map((etiket) => (
+                    {satici.tags.map((etiket) => (
                       <span
                         key={etiket}
                         className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]"
