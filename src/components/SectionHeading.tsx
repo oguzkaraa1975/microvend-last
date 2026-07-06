@@ -15,7 +15,7 @@ function SectionHeading({
         {label}
       </p>
 
-      <h2 className="text-5xl font-light leading-tight tracking-tight text-gray-900">
+      <h2 className="text-3xl font-light leading-tight tracking-tight text-gray-900 sm:text-4xl md:text-5xl">
         {title}
       </h2>
 
