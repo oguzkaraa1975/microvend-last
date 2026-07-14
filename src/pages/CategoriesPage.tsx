@@ -31,7 +31,7 @@ function CategoriesPage() {
         {gorunurKategoriler.map((category) => (
           <Link
             key={category.id}
-            to={`/saticilar?category=${category.slug}`}
+            to={`/kategoriler/${category.slug}`}
             className="group rounded-3xl border border-gray-200 bg-white p-7 transition hover:border-[#4e7bab]"
           >
             <div className="mb-6 h-16 w-16 rounded-2xl bg-[#edf3fa]" />

@@ -43,34 +43,43 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 
 ---
 
-# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-14, post-A0)
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-14, post-A3)
+
+Stages A0, A1, SEC-1, A2, A3 and A3.1 are done. Their outcomes are described below.
 
 ## A.1 Stack
 
-* React 19, TypeScript, Vite 8, Tailwind CSS 4 (`@tailwindcss/vite`), react-router-dom 7.
+* React 19, TypeScript, Vite 8 (`8.0.16`), Tailwind CSS 4 (`@tailwindcss/vite`), react-router-dom 7. Icons: `lucide-react` + hand-rolled brand icons.
 * Package manager: **npm** (`package-lock.json`). Do not use pnpm.
+* SEC-1: `vite` at `8.0.16`, `@babel/core` at `7.29.7`; `npm audit` reports 0 vulnerabilities.
 * No backend. All data is mock, in `src/data/mockData.ts`.
 * The apply form simulates submission (no network call). This is development-only behavior — see release gates in B.7.
 
 ## A.2 Implemented routes
 
-`/`, `/kategoriler`, `/saticilar`, `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
+`/`, `/kesfet`, `/kategoriler`, `/kategoriler/:slug`, `/saticilar` (redirects to `/kesfet`, query preserved), `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
+
+`/kesfet` is the directory (A3): search + category/city/shipping/new filters and sort, **all URL-driven** (`q`, `category`, `sehir`, `gonderim`, `yeni`, `sort`); invalid values fall back safely. Search is Turkish accent-tolerant (A3.1). Category matching is by `categoryId`. `/kategoriler/:slug` reuses the directory with a locked category.
 
 ## A.3 Implemented components & hooks
 
-Header, Footer, Hero, SectionHeading, SellerImage (single image seam with initials fallback), CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component). Hook: `usePageTitle`.
+* Primitives (A1): `ui/Button` (primary/secondary/ghost), `icons/BrandIcons` (WhatsApp/Instagram), `ScrollToTop` (mounted in `App.tsx`). `SectionHeading` and `SellerImage` refreshed to the new design system (flat fallback). `public/icons.svg` removed.
+* Directory (A3): `directory/BusinessCard`, `directory/DirectoryResults`, `directory/newest` (`getNewestSellers` — newest 4 by `joinedAt`, reused by A6), `directory/normalize` (`normalizeSearch`), `RedirectWithQuery`. `SellersPage` removed (absorbed into `/kesfet`).
+* Still on the old blue style until their own stages: Header, Footer, Hero, CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component). Hook: `usePageTitle`.
 
 ## A.4 Implemented data model (`src/data/mockData.ts`)
 
 * `Category { id, slug, name, description, image, sellerCount (computed), featured }`
-* `Seller { id, slug, name, categoryId, categoryName, city, shortDescription, fullDescription, story, coverImage, logoImage, galleryImages: {url, alt}[], tags[], instagramUrl, whatsappUrl, websiteUrl, featured, planType, foundedYear, location }`
-* 6 sellers, 6 categories (old taxonomy: El Yapımı / Ev Dekorasyonu / Moda / Takı / Organik Ürünler / Sanat & Tasarım).
+* `Seller { …, joinedAt: string (ISO), shippingScope: "local" | "regional" | "nationwide", … }` (all prior fields kept, incl. `planType`).
+* `Collection { id, slug, title, description, intro, coverImage, sellerIds[], sponsored, publishedAt }`, `FeaturedStory { sellerId, title, excerpt, quote?, image }`.
+* 12 sellers, 6 categories (new taxonomy: Seramik / Ev & Yaşam / Tekstil / Takı / Doğal Ürünler / Kırtasiye). The original 6 seller `id`/`slug` values are preserved.
+* 3 collections (one `sponsored: true` — dev/test only, must be `false` in production; see B.7) and one `featuredStory`.
 * All images are Unsplash placeholders (localization is an A11 task).
 
-## A.5 Visual state after A0 (transitional — intentional)
+## A.5 Visual state (transitional — intentional)
 
 * Design tokens and fonts are live (see B.2): base is Manrope on paper `#F7F3EC` with ink text; the app shell uses `bg-paper text-ink`.
-* Components still carry the old blue style (inline hexes like `#4e7bab`, `rounded-[2rem]` cards). This mixed look is deliberate: each pending stage converts only the files it touches, and stage A8 is the hard gate where old hexes/radii/copy must reach zero.
+* New A1/A3 code (primitives, directory, `/kesfet`, `/kategoriler/:slug`) is on the new tokens. The remaining chrome and pages (Header, Footer, Hero, CTA, HowItWorks, FeaturedSellers, Categories, homepage, Pricing, About, Apply, 404) still carry the old blue style (inline hexes like `#4e7bab`, `rounded-[2rem]`). This mixed look is deliberate: each pending stage converts only the files it touches, and A8 is the hard gate where old hexes/radii/copy must reach zero.
 * `.card-soft` in `index.css` is **deprecated**: still consumed by old components, will be deleted in A8. Do not use it in new code.
 
 ---
@@ -104,13 +113,12 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 * UI copy uses **"işletme"** (or "üretici" where fitting) — not "satıcı".
 * Data layer and field names stay seller-based: `Seller`, `sellers`, `sellerIds`, `seller_id`.
-* URLs are frozen: `/saticilar/:slug` keeps working; the `/saticilar` list route will redirect to `/kesfet` (A3). Bulk renames of fields or URLs are a separate migration decision — never do them implicitly.
+* URLs are frozen: `/saticilar/:slug` keeps working; the `/saticilar` list route redirects to `/kesfet` (A3, done). Bulk renames of fields or URLs are a separate migration decision — never do them implicitly.
 
 ## B.4 Target IA and stages (pending — route → stage that builds it)
 
-* A1 — UI primitives: `ui/Button`, icon system (lucide-react + hand-rolled brand icons), refreshed SectionHeading/SellerImage, ScrollToTop.
-* A2 — Mock data: new taxonomy, ~12 businesses, `joinedAt`/`shippingScope`, collections, featured story.
-* A3 — `/kesfet` (absorbs `/saticilar` list; all filters URL-driven), `/kategoriler/:slug`, redirect.
+A1, A2, A3 and A3.1 are done — see Part A. Remaining stages:
+
 * A4 — `/seckiler`, `/seckiler/:slug`, `/iletisim` (no fake contact form).
 * A5 — Header/Footer rebuild; `/giris`, `/uye-ol`, `/sifre-sifirlama`, `/favoriler` as honest placeholders (dev/preview only); `/gizlilik`, `/kullanim-kosullari` as visible DRAFTs.
 * A6 — New homepage (search hero → categories → new businesses → membership band → weekly collection → needs grid → producer story → join CTA).
@@ -123,11 +131,8 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 Target header (A5, desktop single line, exact order): microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled brand CTA). Ücretlendirme is **not** in the header (reachable via footer / apply flow).
 
-## B.5 Target data model additions (A2)
+## B.5 Data model notes (A2 done — see A.4; these constraints remain binding)
 
-* New taxonomy: Seramik (`seramik`), Ev & Yaşam (`ev-yasam`), Tekstil (`tekstil`), Takı (`taki`), Doğal Ürünler (`dogal-urunler`), Kırtasiye (`kirtasiye`).
-* `Seller` += `joinedAt: string` (ISO), `shippingScope: "local" | "regional" | "nationwide"`.
-* New types: `Collection { id, slug, title, description, intro, coverImage, sellerIds: string[], sponsored: boolean, publishedAt }`, `FeaturedStory { sellerId, title, excerpt, quote?, image }`.
 * The sponsored mock collection is dev/test-only (label render testing). Production data starts with **all** collections `sponsored: false` until a real sponsor exists.
 * Seller ids (`s1`…) are canonical stable ids: the future `sellers` table must keep them (`id text primary key`).
 
