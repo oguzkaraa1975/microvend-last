@@ -43,9 +43,9 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 
 ---
 
-# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-14, post-A3)
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A4)
 
-Stages A0, A1, SEC-1, A2, A3 and A3.1 are done. Their outcomes are described below.
+Stages A0, A1, SEC-1, A2, A3, A3.1 and A4 are done. Their outcomes are described below.
 
 ## A.1 Stack
 
@@ -57,14 +57,17 @@ Stages A0, A1, SEC-1, A2, A3 and A3.1 are done. Their outcomes are described bel
 
 ## A.2 Implemented routes
 
-`/`, `/kesfet`, `/kategoriler`, `/kategoriler/:slug`, `/saticilar` (redirects to `/kesfet`, query preserved), `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
+`/`, `/kesfet`, `/kategoriler`, `/kategoriler/:slug`, `/seckiler`, `/seckiler/:slug`, `/iletisim`, `/saticilar` (redirects to `/kesfet`, query preserved), `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
 
 `/kesfet` is the directory (A3): search + category/city/shipping/new filters and sort, **all URL-driven** (`q`, `category`, `sehir`, `gonderim`, `yeni`, `sort`); invalid values fall back safely. Search is Turkish accent-tolerant (A3.1). Category matching is by `categoryId`. `/kategoriler/:slug` reuses the directory with a locked category.
+
+`/seckiler` + `/seckiler/:slug` (A4): editorial collections, newest-first by `publishedAt`. Sponsored collections show a "Sponsorlu" label (low-radius, not a pill) plus a transparency line on the detail page ("Bu içerik sponsorlu tanıtım alanıdır; editoryal seçim değildir."); non-sponsored show "Microvend Seçkisi". `/iletisim` (A4) is static and honest — no fake form, email, phone, or address (see B.7 for the A11 gate).
 
 ## A.3 Implemented components & hooks
 
 * Primitives (A1): `ui/Button` (primary/secondary/ghost), `icons/BrandIcons` (WhatsApp/Instagram), `ScrollToTop` (mounted in `App.tsx`). `SectionHeading` and `SellerImage` refreshed to the new design system (flat fallback). `public/icons.svg` removed.
 * Directory (A3): `directory/BusinessCard`, `directory/DirectoryResults`, `directory/newest` (`getNewestSellers` — newest 4 by `joinedAt`, reused by A6), `directory/normalize` (`normalizeSearch`), `RedirectWithQuery`. `SellersPage` removed (absorbed into `/kesfet`).
+* Collections + contact (A4): `pages/CollectionsPage`, `pages/CollectionDetailPage`, `pages/ContactPage`; `data/collections.ts` (`resolveCollectionSellers` — resolves `sellerIds` to existing sellers, order preserved, missing ids dropped, count from resolved). Detail reuses `BusinessCard`/`Button`.
 * Still on the old blue style until their own stages: Header, Footer, Hero, CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component). Hook: `usePageTitle`.
 
 ## A.4 Implemented data model (`src/data/mockData.ts`)
@@ -117,9 +120,8 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 ## B.4 Target IA and stages (pending — route → stage that builds it)
 
-A1, A2, A3 and A3.1 are done — see Part A. Remaining stages:
+A1, A2, A3, A3.1 and A4 are done — see Part A. Remaining stages:
 
-* A4 — `/seckiler`, `/seckiler/:slug`, `/iletisim` (no fake contact form).
 * A5 — Header/Footer rebuild; `/giris`, `/uye-ol`, `/sifre-sifirlama`, `/favoriler` as honest placeholders (dev/preview only); `/gizlilik`, `/kullanim-kosullari` as visible DRAFTs.
 * A6 — New homepage (search hero → categories → new businesses → membership band → weekly collection → needs grid → producer story → join CTA).
 * A7 — Business profile actions: Favorilere Ekle (auth dialog), Paylaş (Web Share + fallback), Mağazayı Ziyaret Et.
@@ -127,7 +129,7 @@ A1, A2, A3 and A3.1 are done — see Part A. Remaining stages:
 * A8 — Copy/polish sweep, hard gate: old hexes, `rounded-[2*`, `.card-soft`, UI "satıcı" all reach zero. Pricing page converts per the approved GM plan.
 * A9 — Supabase applications (see B.6).
 * A10 — Supabase auth + favorites; placeholders replaced with real pages.
-* A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check).
+* A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check, real contact address on `/iletisim`).
 
 Target header (A5, desktop single line, exact order): microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled brand CTA). Ücretlendirme is **not** in the header (reachable via footer / apply flow).
 
@@ -149,7 +151,7 @@ Order: (1) **A9 applications** — insert-only for anon; column-level `GRANT INS
 
 * **Technical preview:** allowed at any stage; membership CTAs may be hidden or shown as honest placeholders; never announce an interim design as the final version.
 * **Public pilot:** requires A9 **and** A10 complete. No CTA-hiding exemption. The simulated apply form must not be public.
-* **Final launch:** full A11 checklist (fonts self-hosted, images localized/optimized with alt texts and broken-image check, SEO tasks done, all collections `sponsored: false`, legal drafts reviewed).
+* **Final launch:** full A11 checklist (fonts self-hosted, images localized/optimized with alt texts and broken-image check, SEO tasks done, all collections `sponsored: false`, `/iletisim` has a real contact address, legal drafts reviewed).
 * Legal pages (`/gizlilik`, `/kullanim-kosullari`) ship with a visible "Taslak" notice until data processing, Supabase, analytics, and cookie decisions are final.
 
 ---
