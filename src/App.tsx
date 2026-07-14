@@ -15,7 +15,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#fcfcfc] text-gray-900">
+      <div className="min-h-screen bg-paper text-ink">
         <Header />
 
         <main>

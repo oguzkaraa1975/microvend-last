@@ -1,12 +1,21 @@
 # CLAUDE.md — Microvend Project Guide
 
-## 1. Project Identity
+Last updated: 2026-07-14 (revision brief applied — stage A0 of the approved plan).
 
-Microvend is a digital showcase platform for micro and small businesses.
+This document has two parts:
+
+* **PART A — CURRENT IMPLEMENTED STATE:** what actually exists in the repo today.
+* **PART B — APPROVED TARGET & PENDING STAGES:** the approved revision direction; nothing in Part B is implemented unless Part A says so.
+
+Never document unbuilt routes or features as if they exist. When a stage ships, move its items from Part B into Part A.
+
+## 1. Project Identity (binding, permanent)
+
+Microvend is an **open micro-business directory with an editorial discovery layer**.
 
 It is not a marketplace.
 
-Do not build marketplace features unless explicitly requested:
+Never build marketplace features unless explicitly requested:
 
 * Cart
 * Checkout
@@ -17,459 +26,175 @@ Do not build marketplace features unless explicitly requested:
 
 Core positioning:
 
-> A premium, simple, commission-free digital showcase for micro businesses.
+> Accessible visibility for micro businesses, organized and trustworthy discovery for users.
+> ("Mikro işletmeler için erişilebilir görünürlük, kullanıcılar için düzenli ve güvenilir keşif.")
 
-## 2. Product Logic
+Visitors are routed to the business's own website, Instagram, WhatsApp, or sales channel. Transactions happen outside Microvend.
 
-Microvend helps small sellers present their brand, products, campaigns, and contact channels.
+## 2. Trust & Revenue Principles (binding — revenue model decided 2026-07-14)
 
-Main user flow:
+* All user accounts are free. Basic business profile is free. No sales commission. No payments or orders inside Microvend.
+* Business monetization: a **single paid Pro membership** offering broader features, plus optional paid promotion tools shown only as clearly **"Sponsorlu"-labeled** placements (homepage, category pages, other suitable areas). Nothing else is sold.
+* Organic ranking is never sold. Paid membership or promotion never buys organic position.
+* Trust labels are never sold: "Editörün seçimi", "Güvenilir işletme", "Editör onaylı" or similar. Editorial selection cannot be bought.
+* Sponsored content is always explicitly labeled "Sponsorlu" and never mixes into organic results.
+* **Prices are not final. Never write assumed prices anywhere** — use honest "pricing will be announced" copy until amounts are decided.
+* **Do not change the current multi-tier package UI or `Seller.planType` ("silver"/"gold"/"premium") yet.** The transition to free/pro + promotion add-ons follows the GM transition plan, prepared as a plan-only turn before stage A8 (see B.4).
 
-1. Visitor lands on Home.
-2. Visitor understands the value proposition.
-3. Visitor browses categories.
-4. Visitor sees seller cards.
-5. Visitor opens seller detail page.
-6. Visitor contacts seller through WhatsApp, Instagram, or website.
-7. Seller applies through application form.
+---
 
-Transactions happen outside Microvend.
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-14, post-A0)
 
-## 3. Target Customers
+## A.1 Stack
 
-Primary customers:
+* React 19, TypeScript, Vite 8, Tailwind CSS 4 (`@tailwindcss/vite`), react-router-dom 7.
+* Package manager: **npm** (`package-lock.json`). Do not use pnpm.
+* No backend. All data is mock, in `src/data/mockData.ts`.
+* The apply form simulates submission (no network call). This is development-only behavior — see release gates in B.7.
 
-* Micro businesses
-* Local shops
-* Handmade product sellers
-* Boutique brands
-* Local food producers
-* Home-based sellers
-* Instagram-first sellers
-* Small service providers
+## A.2 Implemented routes
 
-Their problems:
+`/`, `/kategoriler`, `/saticilar`, `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
 
-* No professional website
-* Instagram looks unstructured
-* Low digital trust
-* Limited technical skill
-* Need visibility without marketplace commissions
+## A.3 Implemented components & hooks
 
-## 4. Business Model
+Header, Footer, Hero, SectionHeading, SellerImage (single image seam with initials fallback), CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component). Hook: `usePageTitle`.
 
-Initial package model:
+## A.4 Implemented data model (`src/data/mockData.ts`)
 
-* Silver: 10 USD / month
-* Gold: 25 USD / month
-* Premium: 100 USD / month
+* `Category { id, slug, name, description, image, sellerCount (computed), featured }`
+* `Seller { id, slug, name, categoryId, categoryName, city, shortDescription, fullDescription, story, coverImage, logoImage, galleryImages: {url, alt}[], tags[], instagramUrl, whatsappUrl, websiteUrl, featured, planType, foundedYear, location }`
+* 6 sellers, 6 categories (old taxonomy: El Yapımı / Ev Dekorasyonu / Moda / Takı / Organik Ürünler / Sanat & Tasarım).
+* All images are Unsplash placeholders (localization is an A11 task).
 
-The first MVP can run as a free pilot.
+## A.5 Visual state after A0 (transitional — intentional)
 
-Do not implement payment, billing, or subscriptions in the first MVP unless explicitly requested.
+* Design tokens and fonts are live (see B.2): base is Manrope on paper `#F7F3EC` with ink text; the app shell uses `bg-paper text-ink`.
+* Components still carry the old blue style (inline hexes like `#4e7bab`, `rounded-[2rem]` cards). This mixed look is deliberate: each pending stage converts only the files it touches, and stage A8 is the hard gate where old hexes/radii/copy must reach zero.
+* `.card-soft` in `index.css` is **deprecated**: still consumed by old components, will be deleted in A8. Do not use it in new code.
 
-## 5. Tech Stack
+---
 
-Current stack:
+# PART B — APPROVED TARGET & PENDING STAGES
 
-* React
-* TypeScript
-* Vite
-* Tailwind CSS
-* pnpm
+## B.1 Target product definition
 
-Possible future backend:
+"Open micro-business directory + editorial discovery layer." The searchable open directory is the backbone. Editorial content (Seçkiler) is a secondary discovery layer — it offers users new discovery paths and is **never** an acceptance gate for businesses being on the platform.
 
-* Supabase
+## B.2 Design system (IN FORCE from A0 — all new or edited UI code must follow)
 
-Do not migrate to Next.js or another framework unless explicitly requested.
+Colors — use tokens only; **raw hexes are forbidden in new code** (validation/warning/accessibility states exempt). Tokens are defined in `src/index.css` `@theme`:
 
-Do not add heavy dependencies unless clearly necessary.
+| Token | Value | Role | Utility |
+| --- | --- | --- | --- |
+| paper | `#F7F3EC` | warm background | `bg-paper` |
+| ink | `#1D211F` | primary text | `text-ink` |
+| brand | `#315E7D` | deep matte blue, primary CTA | `bg-brand` |
+| brand-dark | `#27506C` | CTA hover | `bg-brand-dark` |
+| muted | `#626A65` | stone gray, secondary text | `text-muted` |
+| clay | `#B85C42` | terracotta accent, eyebrows | `text-clay` |
 
-## 6. Design Direction
+Typography: **Newsreader** (`font-display`) for large/editorial headings; **Manrope** (`font-sans`) for body, navigation, buttons. Loaded from Google Fonts for now; WOFF2 self-hosting is an A11 task.
 
-Microvend should feel:
+Feel: editorial, calm, warm, trustworthy. Strong typographic hierarchy, thin divider lines (e.g. `border-ink/10`), **low border radii** (`rounded-sm`/`rounded-md` max), image-heavy business cards, functional whitespace, real producer/atelier photography direction.
 
-* Premium
-* Minimal
-* Clean
-* Calm
-* Trustworthy
-* Modern
-* Lightweight
+Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), pill-shaped buttons, gradients, glassmorphism, dashboard aesthetics, popups/blinking ads, tracking ads, paid content presented as organic.
 
-Avoid:
+## B.3 Terminology & naming (binding)
 
-* Flashy marketplace visuals
-* Aggressive sales language
-* Dense layouts
-* Too many colors
-* Too many animations
-* Generic SaaS clutter
+* UI copy uses **"işletme"** (or "üretici" where fitting) — not "satıcı".
+* Data layer and field names stay seller-based: `Seller`, `sellers`, `sellerIds`, `seller_id`.
+* URLs are frozen: `/saticilar/:slug` keeps working; the `/saticilar` list route will redirect to `/kesfet` (A3). Bulk renames of fields or URLs are a separate migration decision — never do them implicitly.
 
-## 7. Visual System
+## B.4 Target IA and stages (pending — route → stage that builds it)
 
-Preferred palette:
+* A1 — UI primitives: `ui/Button`, icon system (lucide-react + hand-rolled brand icons), refreshed SectionHeading/SellerImage, ScrollToTop.
+* A2 — Mock data: new taxonomy, ~12 businesses, `joinedAt`/`shippingScope`, collections, featured story.
+* A3 — `/kesfet` (absorbs `/saticilar` list; all filters URL-driven), `/kategoriler/:slug`, redirect.
+* A4 — `/seckiler`, `/seckiler/:slug`, `/iletisim` (no fake contact form).
+* A5 — Header/Footer rebuild; `/giris`, `/uye-ol`, `/sifre-sifirlama`, `/favoriler` as honest placeholders (dev/preview only); `/gizlilik`, `/kullanim-kosullari` as visible DRAFTs.
+* A6 — New homepage (search hero → categories → new businesses → membership band → weekly collection → needs grid → producer story → join CTA).
+* A7 — Business profile actions: Favorilere Ekle (auth dialog), Paylaş (Web Share + fallback), Mağazayı Ziyaret Et.
+* GM — revenue-model transition plan (plan-only turn, required before A8): pricing page redesign to free basic + single Pro (no assumed prices), `planType` → `"free" | "pro"` migration decision, "Sponsorlu" promotion-placement surface draft. Building promotion tools is outside the A0–A11 scope.
+* A8 — Copy/polish sweep, hard gate: old hexes, `rounded-[2*`, `.card-soft`, UI "satıcı" all reach zero. Pricing page converts per the approved GM plan.
+* A9 — Supabase applications (see B.6).
+* A10 — Supabase auth + favorites; placeholders replaced with real pages.
+* A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check).
 
-* Background: `#fcfcfc`
-* Primary: `#4e7bab`
-* Accent 1: `#6b91b9`
-* Accent 2: `#88a7c7`
-* Accent 3: `#a5bed6`
+Target header (A5, desktop single line, exact order): microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled brand CTA). Ücretlendirme is **not** in the header (reachable via footer / apply flow).
 
-Use white, soft gray, and muted blue tones.
+## B.5 Target data model additions (A2)
 
-Do not introduce unrelated colors except for validation, warning, or accessibility states.
+* New taxonomy: Seramik (`seramik`), Ev & Yaşam (`ev-yasam`), Tekstil (`tekstil`), Takı (`taki`), Doğal Ürünler (`dogal-urunler`), Kırtasiye (`kirtasiye`).
+* `Seller` += `joinedAt: string` (ISO), `shippingScope: "local" | "regional" | "nationwide"`.
+* New types: `Collection { id, slug, title, description, intro, coverImage, sellerIds: string[], sponsored: boolean, publishedAt }`, `FeaturedStory { sellerId, title, excerpt, quote?, image }`.
+* The sponsored mock collection is dev/test-only (label render testing). Production data starts with **all** collections `sponsored: false` until a real sponsor exists.
+* Seller ids (`s1`…) are canonical stable ids: the future `sellers` table must keep them (`id text primary key`).
 
-Typography direction:
+## B.6 Supabase plan (build each part only in its stage)
 
-* Headings: Montserrat Light / Montserrat
-* Body: Montserrat or clean sans-serif fallback
+Order: (1) **A9 applications** — insert-only for anon; column-level `GRANT INSERT (allowed columns…)` so `id`/`status`/`created_at`/admin columns are never grantable to anon; `CHECK` constraints for max lengths and allowed category slugs; `status` server-controlled (`DEFAULT 'pending'`); honeypot **plus**, before public pilot, one of Turnstile / Edge Function validation / rate-limit; (2) **A10 auth + favorites** — `favorites (user_id uuid references auth.users on delete cascade, seller_id text, created_at, primary key (user_id, seller_id))`, RLS `user_id = auth.uid()` for select/insert/delete; (3) sellers/categories/gallery data layer with mock fallback; (4) storage/admin — explicit request only.
 
-Use spacious layouts, readable text, and calm card structures.
+* RLS from day one on every table.
+* `service_role` key never in frontend code, env vars shipped to the client, or the repo.
+* `.env` added to `.gitignore` in A9.
+* **No fake backend behavior:** never simulate login or favorites; forms that pretend to save must never reach a public release.
 
-## 8. Expected Pages
+## B.7 Release gates (binding)
 
-Expected pages may include:
+* **Technical preview:** allowed at any stage; membership CTAs may be hidden or shown as honest placeholders; never announce an interim design as the final version.
+* **Public pilot:** requires A9 **and** A10 complete. No CTA-hiding exemption. The simulated apply form must not be public.
+* **Final launch:** full A11 checklist (fonts self-hosted, images localized/optimized with alt texts and broken-image check, SEO tasks done, all collections `sponsored: false`, legal drafts reviewed).
+* Legal pages (`/gizlilik`, `/kullanim-kosullari`) ship with a visible "Taslak" notice until data processing, Supabase, analytics, and cookie decisions are final.
 
-* Home
-* Categories
-* Category detail
-* Sellers
-* Seller detail
-* Apply
-* About
-* Pricing
+---
 
-Use the existing routing structure.
+## Working Rules (binding, unchanged in spirit)
 
-Do not rewrite routing unless necessary.
+### Coding
 
-## 9. Expected Components
+* Use TypeScript properly. Keep components small, readable, focused. Clear prop names. Avoid overengineering.
+* No Redux/Zustand or similar state tools (plain React context is allowed where the plan says so).
+* Preserve existing working logic unless a change is necessary. Smallest effective change when editing existing files.
+* Approved dependency exceptions: `lucide-react` (A1), `@supabase/supabase-js` (A9). Anything else needs explicit approval.
 
-Expected components may include:
+### Styling
 
-* Header
-* Hero
-* CategoryGrid
-* FeaturedSellers
-* SellerCard
-* SellerDetail
-* PricingPlans
-* SellerApplySection
-* Footer
+* Tailwind CSS consistently; use B.2 tokens, never new raw hexes. Generous spacing, credible cards, clear (not aggressive) buttons, responsive mobile+desktop. Avoid inline styles without strong reason.
 
-Reuse components where possible.
+### Routing
 
-Avoid duplicating large UI blocks.
+* Use the existing react-router setup. Slugs in URLs. Navigation links must match actual routes; no broken routes. Do not replace routing architecture.
 
-## 10. Mock Data
+### Forms
 
-Mock data should usually live in:
+* Apply form collects: full name, brand name, category, city, email, phone, Instagram, website, short description. Simple validation: required fields, basic email check, clear error and success messages (Turkish).
 
-* `src/data/mockData.ts`
+### Accessibility
 
-Expected data groups:
+* Semantic HTML. Buttons are buttons, links are links. Images have alt text. Readable contrast. Visible hover/focus states.
 
-* categories
-* sellers
-* pricing plans
-* featured sellers
+### Performance
 
-Do not hardcode seller or category data inside visual components if mock data already exists.
+* Keep the app lightweight. No unnecessary packages, large images, or heavy animation libraries. Reuse components.
 
-Keep data structures compatible with future Supabase tables.
+### Git
 
-## 11. Seller Data Model
+* Do not create commits unless explicitly requested — the user commits. Do not change remotes. Do not overwrite user work. Do not delete files unless clearly obsolete and confirmed.
 
-A seller should generally support:
-
-* id
-* slug
-* name
-* categoryId
-* categoryName
-* city
-* shortDescription
-* fullDescription
-* story
-* coverImage
-* logoImage
-* tags
-* instagramUrl
-* whatsappUrl
-* websiteUrl
-* featured
-* planType
-
-Keep field names consistent.
-
-If new fields are needed, update mock data and affected components cleanly.
-
-## 12. Category Data Model
-
-A category should generally support:
-
-* id
-* slug
-* name
-* description
-* image
-* sellerCount
-* featured
-
-Category URLs should use slugs, not display names.
-
-## 13. Development Priorities
-
-Current priority order:
-
-1. Stabilize frontend structure.
-2. Ensure all pages render correctly.
-3. Implement category filtering.
-4. Implement seller search.
-5. Implement seller detail pages.
-6. Improve application form UX.
-7. Improve mobile responsiveness.
-8. Prepare data structure for Supabase.
-9. Add basic SEO.
-10. Add backend only after frontend MVP is clean.
-
-## 14. MVP Scope
-
-MVP should include:
-
-* Home page
-* Category browsing
-* Seller cards
-* Seller detail page
-* Application form
-* Pricing section
-* Responsive layout
-* Clean mock data
-
-MVP should not include unless requested:
-
-* User login
-* Seller dashboard
-* Payment
-* Subscription billing
-* Admin panel
-* Multi-language support
-* Marketplace checkout
-
-## 15. Coding Rules
-
-Use TypeScript properly.
-
-Keep components small, readable, and focused.
-
-Prefer clear prop names.
-
-Avoid overengineering.
-
-Do not add Redux, Zustand, or similar state tools unless explicitly requested.
-
-Use React hooks simply and predictably.
-
-Preserve existing working logic unless a change is necessary.
-
-When editing an existing file, make the smallest effective change.
-
-## 16. Styling Rules
-
-Use Tailwind CSS consistently.
-
-Preserve the current blue-white premium/minimal identity.
-
-Use generous spacing.
-
-Cards should feel clean and credible.
-
-Buttons should be clear, not aggressive.
-
-CTAs should use Microvend blue tones.
-
-Maintain responsive behavior for mobile and desktop.
-
-Avoid inline styles unless there is a strong reason.
-
-## 17. Routing Rules
-
-Use existing routing setup.
-
-Do not replace routing architecture unless explicitly requested.
-
-Category and seller detail pages should use slugs when possible.
-
-Navigation links must match actual routes.
-
-Avoid broken routes.
-
-## 18. Forms
-
-Application form should collect:
-
-* Full name
-* Brand name
-* Category
-* City
-* Email
-* Phone
-* Instagram
-* Website
-* Short description
-
-Validation should be simple:
-
-* Required fields
-* Basic email validation
-* Clear error message
-* Clear success message
-
-If backend is absent, simulate successful submission cleanly.
-
-## 19. Accessibility
-
-Use semantic HTML.
-
-Buttons must be buttons.
-
-Links must be links.
-
-Images should have alt text.
-
-Text contrast must stay readable.
-
-Interactive elements should have visible hover/focus states.
-
-## 20. Performance
-
-Keep the app lightweight.
-
-Avoid unnecessary packages.
-
-Avoid large image files.
-
-Avoid complex animation libraries.
-
-Use reusable components.
-
-## 21. SEO Direction
-
-Basic SEO may later include:
-
-* Page titles
-* Meta descriptions
-* Open Graph tags
-* Clean URLs
-* Seller/category slugs
-
-Do not prioritize advanced SEO before the MVP flow works.
-
-## 22. Supabase Future Direction
-
-Supabase may later be used for:
-
-* Sellers
-* Categories
-* Applications
-* Admin review
-* Featured seller status
-* Uploaded images
-
-Do not implement Supabase until explicitly requested.
-
-## 23. Admin Panel Future Direction
-
-Admin panel may later include:
-
-* View applications
-* Approve/reject sellers
-* Add/edit sellers
-* Manage categories
-* Mark sellers as featured
-* Manage pricing plans
-
-Do not build admin panel in the first MVP unless requested.
-
-## 24. Claude Code Workflow
-
-Before making changes:
-
-1. Inspect relevant files.
-2. Summarize current structure.
-3. List files that will be changed.
-4. Explain the intended change briefly.
-
-After making changes:
-
-1. Summarize what changed.
-2. List changed files.
-3. Mention known limitations.
-4. Suggest the next practical step.
-
-Do not make broad unrelated changes.
-
-Do not refactor the whole project unless explicitly requested.
-
-## 25. Commands
-
-Use only commands that exist in `package.json`.
-
-Common commands may include:
+### Commands
 
 ```bash
-pnpm install
-pnpm dev
-pnpm build
-pnpm lint
+npm install
+npm run dev
+npm run build
+npm run lint
 ```
 
-If this project uses npm instead of pnpm, use the existing package manager shown by lock files.
+Verification chain after every stage: `npx tsc --noEmit -p tsconfig.app.json` → `npx eslint .` → `npm run build`, then preview DOM checks at 375px and 1280px.
 
-## 26. Git Discipline
+### Workflow
 
-Do not create commits unless explicitly requested.
-
-Do not change remote settings.
-
-Do not overwrite user work.
-
-Do not delete files unless clearly obsolete and confirmed.
-
-## 27. First Recommended Task
-
-When starting work, inspect:
-
-* `package.json`
-* `src/App.tsx`
-* `src/main.tsx`
-* `src/index.css`
-* `src/data/mockData.ts`
-* `src/components`
-* `src/pages`
-
-Then report:
-
-* Current file structure
-* What already works
-* What is missing
-* Recommended next 3 development steps
-
-Do not edit files before this first inspection unless explicitly instructed.
-
-## 28. Current Strategic Direction
-
-First goal: produce a strong visual frontend MVP.
-
-The product should prove:
-
-* The concept is understandable.
-* Sellers can be displayed attractively.
-* Categories work.
-* Seller profiles work.
-* Application flow works.
-* The design feels credible enough for pilot outreach.
-
-Do not prematurely build complex infrastructure.
+* Plan first, apply after approval; each stage is one review/apply turn with an explicit file list.
+* After changes: report what changed, changed files, known limitations, next practical step.
+* No broad unrelated changes; no whole-project refactors without explicit request.

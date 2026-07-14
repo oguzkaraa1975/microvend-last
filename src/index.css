@@ -1,9 +1,20 @@
 @import "tailwindcss";
 
+@theme {
+  --color-paper: #f7f3ec;
+  --color-ink: #1d211f;
+  --color-brand: #315e7d;
+  --color-brand-dark: #27506c;
+  --color-muted: #626a65;
+  --color-clay: #b85c42;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+}
+
 :root {
-  font-family: "Montserrat", system-ui, sans-serif;
-  background: #fcfcfc;
-  color: #1f2937;
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
 }
 
 * {
@@ -16,8 +27,8 @@ html {
 
 body {
   margin: 0;
-  background: #fcfcfc;
-  color: #1f2937;
+  background: var(--color-paper);
+  color: var(--color-ink);
 }
 
 button,
@@ -27,23 +38,8 @@ textarea {
   font-family: inherit;
 }
 
+/* deprecated: eski mavi kart stili — A8 süpürme aşamasında silinecek, yeni kodda kullanma */
 .card-soft {
   border: 1px solid #eef3f8;
   box-shadow: 0 8px 30px rgba(78, 123, 171, 0.06);
-}
-
-.text-brand {
-  color: #4e7bab;
-}
-
-.bg-brand {
-  background-color: #4e7bab;
-}
-
-.bg-brand:hover {
-  background-color: #6b91b9;
-}
-
-.border-soft {
-  border-color: #eef3f8;
 }
