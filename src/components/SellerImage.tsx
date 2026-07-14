@@ -28,18 +28,18 @@ function SellerImage({
   const isLogo = variant === "logo";
 
   return (
-    <div
-      className={`relative overflow-hidden bg-gradient-to-br from-[#edf3fa] via-white to-[#dbe7f2] ${className}`}
-    >
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+    <div className={`relative overflow-hidden bg-paper ${className}`}>
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-ink/5 px-4 text-center">
         {isLogo ? (
-          <span className="text-xl font-light text-[#4e7bab]">
+          <span className="text-xl font-medium text-muted">
             {getInitials(label)}
           </span>
         ) : (
           <>
-            <span className="mb-3 h-10 w-10 rounded-2xl border border-white/80 bg-white/75 shadow-sm" />
-            <span className="text-sm font-light text-[#4e7bab]">{label}</span>
+            <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-sm border border-ink/10 bg-paper text-sm font-medium text-muted">
+              {getInitials(label)}
+            </span>
+            <span className="text-sm text-muted">{label}</span>
           </>
         )}
       </div>
