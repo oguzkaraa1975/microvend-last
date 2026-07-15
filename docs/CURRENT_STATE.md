@@ -1,22 +1,25 @@
 # Microvend — Güncel Durum
 
 ## Proje durumu
-Editoryal rehber pivotu uygulanıyor (bkz. CLAUDE.md). Aşamalar A0→A7 tamamlandı, commit edildi ve push edildi. Onaylı plan: `C:\Users\oguz\.claude\plans\text-microvend-logical-tarjan.md`.
+Editoryal rehber pivotu uygulanıyor (bkz. CLAUDE.md). Aşamalar A0→A7, GM plan turu ve A8 GM gelir modeli dilimi tamamlandı, commit edildi ve push edildi. Onaylı planlar: `C:\Users\oguz\.claude\plans\text-microvend-logical-tarjan.md` (A0–A11), `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (GM gelir modeli).
 
-## Son tamamlanan iş: A7 — İşletme Profili Aksiyonları
-`SellerDetailPage.tsx` üzerindeki eski üç eşit-ağırlıklı link satırı (Instagram/WhatsApp/Web Sitesi) kaldırılıp yerine tek bir aksiyon şeridi getirildi: birincil harici aksiyon (`websiteUrl` → `instagramUrl` → `whatsappUrl` önceliğiyle, etiket gerçek hedefe göre değişir), Favorilere Ekle (gerçek favori kaydı yok — yalnızca üyeliğe yönlendiren `FavoriteDialog` açar) ve Paylaş (`navigator.share`, desteklenmiyorsa clipboard fallback + geçici geri bildirim). Sayfanın geri kalanı (hero, hikaye, galeri, CTA bandı) kapsam dışı bırakıldı, eski tasarım stiliyle kaldı.
+## Son tamamlanan iş: A8 GM dilimi — Free/Pro Ücretlendirme Modeli
+Free/Pro modeli ile Sponsorlu Vitrin kararları kesinleşti. `/ucretlendirme` sayfası yeni tasarım sistemiyle yeniden yapıldı: eski Gümüş/Altın/Premium paketleri ve görünürlük-satan vaatler silindi; Free (kalıcı ücretsiz: logo+kapak kota dışı, 1 galeri görseli, 1 seçilmiş satış kanalı, eşit organik görünürlük) ve Pro (₺899/ay veya ₺8.990/yıl: 12 görsel, çoklu kanal, profil içi vitrin, genişletilmiş hikâye, öncelikli destek, istatistikler "yakında") karşılaştırması, 30 gün ücretsiz deneme koşulları (kart bilgisi yok, otomatik yenileme yok, deneme sonunda Free'ye dönüş), Sponsorlu Vitrin bölümü (ayrı ürün, fiyat "yakında açıklanacak", CTA → `/iletisim`) ve birebir tahsilat açıklaması eklendi. Free/Pro CTA'ları → `/basvuru`. `planType` artık `free | pro` (s1–s3 `pro` test verisi, kalan 9 `free`).
 
 ## Değiştirilen temel dosyalar
-- `src/pages/SellerDetailPage.tsx` (aksiyon şeridi yenilendi)
-- Yeni: `src/components/seller/FavoriteDialog.tsx`
+- `src/components/Pricing.tsx` (tam yeniden yazım)
+- `src/pages/PricingPage.tsx` (sarmalayıcı sadeleştirildi)
+- `src/data/mockData.ts` (`planType` migrasyonu)
+- `CLAUDE.md` (onaylı fiyatlar, tahsilat metni, A7+GM+A8-GM senkronizasyonu)
 
 ## Doğrulanan testler
-`tsc --noEmit`, `eslint .`, `npm run build`, `git diff --check` temiz. Tarayıcıda: website mevcut işletmede doğru buton etiketi ve URL, `target="_blank"`/`rel="noopener noreferrer"`, favori dialogunun hiçbir favori kaydetmemesi, `/uye-ol`/`/giris` yönlendirmeleri, Escape/arka plan tıklaması/kapatma butonu ile kapanma, kapanışta odağın tetikleyici butona dönmesi, paylaşımda clipboard hata/başarı geri bildirimi, 320px/1280px'de taşma olmaması, konsolda hata olmaması doğrulandı. Instagram/WhatsApp-only fallback etiketleri mock veride her işletmenin `websiteUrl`'e sahip olması nedeniyle yalnızca kod incelemesiyle doğrulanabildi, canlı DOM'da gözlemlenemedi.
+`tsc --noEmit`, `eslint .`, `npm run build`, `git diff --check` temiz; `planType` bağlamında `silver|gold|premium` grep'i 0 sonuç. Tarayıcıda: tüm onaylı metinler (fiyatlar, deneme koşulları, "yakında" istatistik, Sponsorlu Vitrin fiyatsız, tahsilat metni birebir), CTA href'leri (`/basvuru` ×2, `/iletisim`), tek `h1`, 1280px'de iki sütun / 375px'de alt alta ve taşma yok, konsol temiz.
 
 ## Sıradaki görev
-**GM — Gelir modeli geçiş plan turu** (plan-only, A8 öncesi zorunlu): ücretsiz temel + tek Pro üyelik için ücretlendirme sayfası tasarımı (varsayılan fiyat yok), `planType` → `"free" | "pro"` geçiş kararı, "Sponsorlu" tanıtım-yerleşimi taslağı. Tanıtım araçlarının inşası A0–A11 kapsamı dışında.
+**A8 kalan iş — genel görsel ve terminoloji cila süpürmesi** (sert kapı): eski hex'ler, `rounded-[2*`, `.card-soft`, UI'daki "satıcı" sıfıra iner. Kapsam: About, Apply, 404, `/kategoriler` kopyası ve `SellerDetailPage`'in aksiyon şeridi dışındaki bölümleri.
 
 ## Bilinen açık riskler
-- Ekran görüntüsü aracı bu ortamda tutarlı çalışmıyor; görsel doğrulamalar DOM ölçümü/computed style ve konsol/network incelemesiyle yapıldı, piksel karşılaştırma yapılmadı.
-- Eski mavi stil hâlâ şurada duruyor: Pricing, About, Apply, 404 sayfaları, `/kategoriler` kopyası ve `SellerDetailPage`'in hero/hikaye/galeri/CTA bölümleri — A8 kapı aşamasında temizlenecek.
-- Instagram/WhatsApp-only birincil aksiyon fallback'i mock veri kısıtı nedeniyle yalnızca kod incelemesiyle doğrulandı.
+- Backend, auth, ödeme, abonelik ve gerçek kota mantığı henüz yok — Free/Pro sınırlamaları, deneme süresi ve istatistikler yalnızca ürün açıklaması olarak gösteriliyor (en erken A10+ ile gerçek yetkilendirme).
+- Sponsorlu Vitrin fiyatı trafik verisi oluşana kadar açıklanmayacak.
+- Ekran görüntüsü aracı bu ortamda tutarlı çalışmıyor; görsel doğrulamalar DOM ölçümü/computed style ile yapıldı.
+- Eski mavi stil hâlâ şurada duruyor: About, Apply, 404, `/kategoriler` kopyası ve `SellerDetailPage`'in aksiyon dışı bölümleri — A8 kalan süpürmede temizlenecek.
