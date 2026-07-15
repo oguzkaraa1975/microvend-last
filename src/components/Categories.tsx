@@ -1,54 +1,48 @@
 import { Link } from "react-router-dom";
 import type { Category } from "../data/mockData";
-import SectionHeading from "./SectionHeading";
+import SellerImage from "./SellerImage";
 
 type CategoriesProps = {
   categories: Category[];
 };
 
 function Categories({ categories }: CategoriesProps) {
-  const visibleCategories = categories.filter(
-    (category) => category.sellerCount > 0
+  const gorunurKategoriler = categories.filter(
+    (kategori) => kategori.sellerCount > 0
   );
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <SectionHeading
-          label="Kategoriler"
-          title="Bağımsız satıcıları kategori bazında keşfedin."
-        />
+    <section className="mx-auto max-w-7xl px-6 py-14 lg:py-16">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <h2 className="font-display text-3xl tracking-tight text-ink sm:text-4xl">
+          Kategorilerde keşfet
+        </h2>
 
         <Link
           to="/kategoriler"
-          className="pb-2 text-sm text-[#4e7bab] transition hover:text-[#6b91b9]"
+          className="text-sm text-brand transition-colors hover:text-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           Tüm kategorileri gör
         </Link>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {visibleCategories.map((category) => (
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        {gorunurKategoriler.map((kategori) => (
           <Link
-            key={category.id}
-            to={`/saticilar?category=${category.slug}`}
-            className="card-soft group rounded-[2rem] bg-white p-7 transition hover:-translate-y-1 hover:border-[#a5bed6]"
+            key={kategori.id}
+            to={`/kategoriler/${kategori.slug}`}
+            className="group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
-            <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#edf3fa] text-[#4e7bab] transition group-hover:bg-[#dbe7f2]">
-              <div className="h-5 w-5 rounded-full bg-[#4e7bab]" />
-            </div>
+            <SellerImage
+              src={kategori.image}
+              alt={`${kategori.name} kategorisinden bir görsel`}
+              label={kategori.name}
+              className="aspect-square w-full rounded-sm border border-ink/10 transition-colors group-hover:border-ink/30"
+            />
 
-            <h3 className="mb-4 text-2xl font-light text-gray-900">
-              {category.name}
-            </h3>
-
-            <p className="mb-7 font-light leading-7 text-gray-600">
-              {category.description}
+            <p className="mt-3 text-sm text-ink transition-colors group-hover:text-brand">
+              {kategori.name}
             </p>
-
-            <div className="border-t border-[#eef3f8] pt-5">
-              <span className="text-sm text-[#4e7bab]">Kategoriye git →</span>
-            </div>
           </Link>
         ))}
       </div>

@@ -6,7 +6,9 @@ function DiscoverPage() {
   usePageTitle("Keşfet | Microvend");
 
   const [searchParams] = useSearchParams();
-  const odakAra = searchParams.get("odak") === "ara";
+  const odak = searchParams.get("odak");
+  const focusTarget =
+    odak === "ara" ? "arama" : odak === "sehir" ? "sehir" : undefined;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16 md:py-24">
@@ -25,7 +27,7 @@ function DiscoverPage() {
         </p>
       </div>
 
-      <DirectoryResults autoFocusSearch={odakAra} />
+      <DirectoryResults focusTarget={focusTarget} />
     </div>
   );
 }

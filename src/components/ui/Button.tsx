@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "inverted";
 type ButtonSize = "sm" | "md";
 
 type ButtonProps = {
@@ -30,6 +30,8 @@ const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-brand text-paper hover:bg-brand-dark",
   secondary: "border border-ink/20 text-ink hover:border-ink/40",
   ghost: "text-ink underline-offset-4 hover:text-brand",
+  // koyu/brand zemin üzerinde birincil eylem
+  inverted: "bg-paper text-brand hover:bg-paper/90",
 };
 
 function Button({

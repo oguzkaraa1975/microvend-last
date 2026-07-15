@@ -19,14 +19,18 @@ const siralamaDegerleri = ["az", "za", "newest"];
 const alanSinifi =
   "w-full rounded-sm border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-brand";
 
+// "odak" yalnız hangi kontrole odaklanılacağını söyler; gerçek bir filtre
+// değildir ve odaklandıktan sonra URL'den replace ile temizlenir.
+type FocusTarget = "arama" | "sehir";
+
 type DirectoryResultsProps = {
   lockedCategoryId?: string;
-  autoFocusSearch?: boolean;
+  focusTarget?: FocusTarget;
 };
 
 function DirectoryResults({
   lockedCategoryId,
-  autoFocusSearch,
+  focusTarget,
 }: DirectoryResultsProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -87,12 +91,26 @@ function DirectoryResults({
 
   const aramaFormu = useRef<HTMLFormElement>(null);
   const aramaInput = useRef<HTMLInputElement>(null);
+  const sehirSecim = useRef<HTMLSelectElement>(null);
+  const odakUygulandi = useRef(false);
 
   useEffect(() => {
-    if (autoFocusSearch) {
-      aramaInput.current?.focus();
+    if (!focusTarget || odakUygulandi.current) {
+      return;
     }
-  }, [autoFocusSearch]);
+    odakUygulandi.current = true;
+
+    const hedef =
+      focusTarget === "sehir" ? sehirSecim.current : aramaInput.current;
+    hedef?.focus();
+
+    // Odak parametresi görevini tamamladı: URL'de filtre gibi asılı kalmasın.
+    const sonraki = new URLSearchParams(window.location.search);
+    if (sonraki.has("odak")) {
+      sonraki.delete("odak");
+      setSearchParams(sonraki, { replace: true });
+    }
+  }, [focusTarget, setSearchParams]);
 
   const filtreleriTemizle = () => {
     aramaFormu.current?.reset();
@@ -227,6 +245,7 @@ function DirectoryResults({
 
           <select
             id="kesfet-sehir"
+            ref={sehirSecim}
             value={seciliSehir}
             onChange={(event) => paramGuncelle("sehir", event.target.value)}
             className={alanSinifi}

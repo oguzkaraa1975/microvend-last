@@ -1,127 +1,132 @@
-import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { MapPin, Search } from "lucide-react";
 import SellerImage from "./SellerImage";
-import { sellers } from "../data/mockData";
+import Button from "./ui/Button";
+import { featuredStory, sellers } from "../data/mockData";
+import { resolveCollectionSellers } from "../data/collections";
+
+// Mozaikteki küçük görseller mevcut (doğrulanmış) işletme kapak görsellerinden
+// gelir; büyük görsel featuredStory'den. Yeni haricî görsel URL'si eklenmez.
+const mozaikIdleri = ["s5", "s8", "s9"];
 
 function Hero() {
-  const featuredSeller = sellers.find((seller) => seller.featured) ?? sellers[0];
+  const navigate = useNavigate();
+
+  const sehirSecenekleri = useMemo(
+    () =>
+      [...new Set(sellers.map((isletme) => isletme.city))].sort((a, b) =>
+        a.localeCompare(b, "tr")
+      ),
+    []
+  );
+
+  const mozaikIsletmeleri = useMemo(
+    () => resolveCollectionSellers(mozaikIdleri),
+    []
+  );
+
+  const gonder = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const veri = new FormData(event.currentTarget);
+    const params = new URLSearchParams();
+    const q = String(veri.get("q") ?? "").trim();
+    const sehir = String(veri.get("sehir") ?? "");
+
+    if (q) {
+      params.set("q", q);
+    }
+    if (sehir) {
+      params.set("sehir", sehir);
+    }
+
+    const sorgu = params.toString();
+    navigate(sorgu ? `/kesfet?${sorgu}` : "/kesfet");
+  };
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#dfeaf5,transparent_35%)]" />
-
-      <div className="relative mx-auto grid max-w-7xl gap-16 px-6 py-28 lg:grid-cols-2 lg:items-center">
-        {/* LEFT */}
+    <section className="border-b border-ink/10">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-14 lg:py-16">
         <div>
-          <p className="mb-6 text-sm uppercase tracking-[0.25em] text-[#4e7bab]">
-            Komisyonsuz Dijital Vitrin Platformu
+          <p className="mb-5 text-sm font-medium uppercase tracking-widest text-clay">
+            Bağımsız üreticiler, tek bir rehberde
           </p>
 
-          <h1 className="mb-8 text-4xl font-light leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
-            Mikro işletmeleri görünür hale getirin.
+          <h1 className="font-display text-4xl leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl">
+            Aradığın küçük işletmeyi kolayca bul.
           </h1>
 
-          <p className="mb-10 max-w-2xl text-lg font-light leading-9 text-gray-600">
-            Microvend; bağımsız üreticileri, butik markaları ve küçük
-            işletmeleri modern bir dijital vitrin yapısıyla kullanıcılarla
-            buluşturur.
+          <p className="mt-6 max-w-md text-lg leading-8 text-muted">
+            Sosyal medyanın kalabalığında kaybolan bağımsız üreticileri keşfet.
           </p>
 
-          <div className="flex flex-wrap gap-4">
-            <Link
-              to="/saticilar"
-              className="inline-block rounded-2xl bg-[#4e7bab] px-7 py-4 text-sm text-white shadow-[0_10px_30px_rgba(78,123,171,0.20)] transition hover:bg-[#6b91b9]"
-            >
-              Satıcıları Keşfet
-            </Link>
-
-            <Link
-              to="/basvuru"
-              className="inline-block rounded-2xl border border-[#dbe7f2] bg-white px-7 py-4 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
-            >
-              Satıcı Başvurusu
-            </Link>
-          </div>
-
-          <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4e7bab]" />
-              <span>Komisyonsuz vitrin</span>
+          <form
+            onSubmit={gonder}
+            className="mt-8 flex flex-col gap-2 rounded-sm border border-ink/15 bg-paper p-2 sm:flex-row sm:items-center"
+          >
+            <div className="flex flex-1 items-center gap-2 px-2">
+              <Search
+                size={18}
+                aria-hidden="true"
+                className="shrink-0 text-muted"
+              />
+              <input
+                id="hero-arama"
+                name="q"
+                type="text"
+                placeholder="Ürün, işletme veya kategori ara"
+                className="w-full bg-transparent py-2 text-sm text-ink outline-none placeholder:text-muted"
+              />
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4e7bab]" />
-              <span>Kategori bazlı keşif</span>
+            <div className="flex items-center gap-2 border-t border-ink/10 px-2 pt-2 sm:border-l sm:border-t-0 sm:pl-3 sm:pt-0">
+              <MapPin
+                size={18}
+                aria-hidden="true"
+                className="shrink-0 text-muted"
+              />
+              <select
+                name="sehir"
+                aria-label="Şehir"
+                className="w-full bg-transparent py-2 text-sm text-ink outline-none sm:w-auto"
+              >
+                <option value="">Tüm Türkiye</option>
+                {sehirSecenekleri.map((sehir) => (
+                  <option key={sehir} value={sehir}>
+                    {sehir}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4e7bab]" />
-              <span>Doğrudan iletişim</span>
-            </div>
-          </div>
+            <Button type="submit" className="sm:shrink-0">
+              Keşfet
+            </Button>
+          </form>
         </div>
 
-        {/* RIGHT */}
-        <div className="relative">
-          <div className="card-soft rounded-[2rem] bg-white p-6">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Öne Çıkan Satıcı</p>
-
-                <h3 className="mt-1 text-2xl font-light">
-                  {featuredSeller.name}
-                </h3>
-              </div>
-
-              <div className="rounded-2xl bg-[#edf3fa] px-4 py-2 text-sm text-[#4e7bab]">
-                {featuredSeller.categoryName}
-              </div>
-            </div>
-
+        <div className="grid h-[320px] grid-cols-3 grid-rows-3 gap-3 sm:h-[420px] lg:h-[480px]">
+          <div className="col-span-2 row-span-3">
             <SellerImage
-              src={featuredSeller.coverImage}
-              alt={`${featuredSeller.name} kapak görseli`}
-              label={featuredSeller.name}
+              src={featuredStory.image}
+              alt="Atölyesinde çalışan bir üretici"
+              label="Üretici atölyesi"
               loading="eager"
-              className="mb-6 h-64 rounded-[1.5rem]"
+              className="h-full w-full rounded-sm border border-ink/10"
             />
-
-            <p className="mb-6 leading-7 text-gray-600">
-              {featuredSeller.shortDescription}
-            </p>
-
-            <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                {featuredSeller.tags.slice(0, 2).map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <Link
-                to={`/saticilar/${featuredSeller.slug}`}
-                className="inline-block rounded-xl border border-[#dbe7f2] px-4 py-2 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
-              >
-                İncele
-              </Link>
-            </div>
           </div>
 
-          {/* FLOATING CARD */}
-          <div className="card-soft absolute -bottom-10 -left-10 hidden rounded-3xl bg-white p-5 lg:block">
-            <p className="mb-2 text-sm text-gray-500">Pilot dönemi</p>
-
-            <p className="text-2xl font-light text-gray-900">
-              Başvurular açık
-            </p>
-
-            <p className="mt-2 text-sm text-[#4e7bab]">
-              Editör onaylı satıcı profilleri
-            </p>
-          </div>
+          {mozaikIsletmeleri.map((isletme) => (
+            <SellerImage
+              key={isletme.id}
+              src={isletme.coverImage}
+              alt={`${isletme.name} işletmesinden bir görsel`}
+              label={isletme.name}
+              className="h-full w-full rounded-sm border border-ink/10"
+            />
+          ))}
         </div>
       </div>
     </section>

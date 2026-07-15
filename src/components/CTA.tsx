@@ -1,30 +1,22 @@
-import { Link } from "react-router-dom";
+import Button from "./ui/Button";
 
 function CTA() {
   return (
-    <section className="mx-auto max-w-7xl px-6 pb-24">
-      <div className="rounded-[2rem] bg-[#4e7bab] px-6 py-12 text-white md:px-10 md:py-16">
-        <div className="max-w-3xl">
-          <p className="mb-4 text-sm uppercase tracking-[0.2em] text-blue-100">
-            Microvend'e Katılın
-          </p>
+    <section className="bg-brand text-paper">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+        <h2 className="max-w-xs font-display text-2xl leading-tight tracking-tight sm:text-3xl">
+          İşletmen görünür olmayı hak ediyor.
+        </h2>
 
-          <h3 className="mb-6 text-2xl font-light leading-tight sm:text-3xl md:text-4xl">
-            Komisyon ödemeden görünürlüğünüzü artırın.
-          </h3>
+        <p className="max-w-sm leading-7 text-paper/80 lg:border-l lg:border-paper/25 lg:pl-10">
+          Temel profil ücretsiz. Komisyon yok.
+          <br />
+          Daha fazla kişiye ulaş, emeğini paylaş.
+        </p>
 
-          <p className="mb-8 text-lg leading-8 text-blue-50">
-            Kendi dijital vitrininizi oluşturun, ürünlerinizi sergileyin ve
-            müşterileri kendi satış kanallarınıza yönlendirin.
-          </p>
-
-          <Link
-            to="/basvuru"
-            className="inline-block rounded-2xl bg-white px-7 py-4 text-[#4e7bab] transition hover:bg-gray-100"
-          >
-            Hemen Başvur
-          </Link>
-        </div>
+        <Button to="/basvuru" variant="inverted" className="w-fit shrink-0">
+          İşletmeni Ekle
+        </Button>
       </div>
     </section>
   );

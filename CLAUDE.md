@@ -43,9 +43,9 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 
 ---
 
-# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A5)
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A6)
 
-Stages A0, A1, SEC-1, A2, A3, A3.1, A4 and A5 are done. Their outcomes are described below.
+Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5 and A6 are done. Their outcomes are described below.
 
 ## A.1 Stack
 
@@ -67,11 +67,13 @@ Stages A0, A1, SEC-1, A2, A3, A3.1, A4 and A5 are done. Their outcomes are descr
 
 ## A.3 Implemented components & hooks
 
-* Primitives (A1): `ui/Button` (primary/secondary/ghost; `size` sm/md added in A5), `icons/BrandIcons` (WhatsApp/Instagram), `ScrollToTop` (mounted in `App.tsx`). `SectionHeading` and `SellerImage` refreshed to the new design system (flat fallback). `public/icons.svg` removed.
-* Directory (A3): `directory/BusinessCard`, `directory/DirectoryResults`, `directory/newest` (`getNewestSellers` — newest 4 by `joinedAt`, reused by A6), `directory/normalize` (`normalizeSearch`), `RedirectWithQuery`. `SellersPage` removed (absorbed into `/kesfet`).
+* Primitives (A1): `ui/Button` (variants primary/secondary/ghost/inverted; `size` sm/md — `size` added in A5, `inverted` for brand-coloured surfaces in A6), `icons/BrandIcons` (WhatsApp/Instagram), `ScrollToTop` (mounted in `App.tsx`). `SectionHeading` and `SellerImage` refreshed to the new design system (flat fallback). `public/icons.svg` removed.
+* Directory (A3): `directory/BusinessCard` (optional `badge` prop, added in A6), `directory/DirectoryResults`, `directory/newest` (`getNewestSellers` — newest 4 by `joinedAt`, reused by the homepage), `directory/normalize` (`normalizeSearch`), `RedirectWithQuery`. `SellersPage` removed (absorbed into `/kesfet`).
 * Collections + contact (A4): `pages/CollectionsPage`, `pages/CollectionDetailPage`, `pages/ContactPage`; `data/collections.ts` (`resolveCollectionSellers` — resolves `sellerIds` to existing sellers, order preserved, missing ids dropped, count from resolved). Detail reuses `BusinessCard`/`Button`.
+* Homepage (A6): section order = search hero → Kategorilerde keşfet → Yeni katılan işletmeler → membership band → Bu haftanın seçkisi → İhtiyacına göre keşfet → Üreticinin hikâyesi → business join CTA. Components: `Hero` (rewritten: eyebrow/h1/description + search form → `/kesfet?q=&sehir=` via URLSearchParams, empty params omitted; asymmetric photo mosaic from `featuredStory.image` + existing seller covers, no new image URLs), `Categories` (photo tiles → `/kategoriler/:slug`), `home/NewBusinesses` (`getNewestSellers`, "Yeni" badge, → `/kesfet?yeni=1`), `home/MembershipBand` (thin-bordered, secondary weight, → `/uye-ol` + `/giris`), `home/WeeklyPick` (newest collection by `publishedAt`, no hardcoded id; shows "Sponsorlu" label + transparency line if sponsored), `home/NeedsGrid` (4 paths with lucide icons; `?q=hediye`, `?odak=sehir`, `?q=kişiye özel`, `?q=sürdürülebilir`), `home/ProducerStory` (`featuredStory`; renders nothing if its seller is missing), `CTA` (brand band, "Temel profil ücretsiz. Komisyon yok."). Single `h1` (hero). `HowItWorks` and `FeaturedSellers` removed. `index.html` title/description/OG updated to the directory positioning.
+* `odak` (A5/A6) is a **focus hint, not a filter**: `/kesfet?odak=ara` focuses the search input, `?odak=sehir` focuses the city select (`DirectoryResults focusTarget`); the param is stripped from the URL with `replace` after use and never affects results.
 * Global chrome (A5): `Header` rebuilt on the design system — desktop single line at `lg`+ in the exact order microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled); "Ara" is icon-only below `xl` and links to `/kesfet?odak=ara` (autofocuses the search input via `DirectoryResults autoFocusSearch`). Mobile: icon hamburger + full-width panel, `aria-expanded`/`aria-controls`, closes on Escape and on link click. `Footer` rebuilt with 5 link columns (Keşfet / Kategoriler / Hakkımızda / Kaynaklar / Yasal) — **only real routes are linked**; category links are generated from the data layer. `pages/AuthPlaceholderPage` (variant-driven) and `pages/LegalDraftPage` (variant-driven) added.
-* Still on the old blue style until their own stages: Hero, CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component), plus the homepage/About/Apply/404 copy. Hook: `usePageTitle`.
+* Still on the old blue style until their own stages: Pricing (plan data hardcoded inside the component), About, Apply, 404 and the `/kategoriler` copy. Hook: `usePageTitle`.
 
 ## A.4 Implemented data model (`src/data/mockData.ts`)
 
@@ -85,7 +87,7 @@ Stages A0, A1, SEC-1, A2, A3, A3.1, A4 and A5 are done. Their outcomes are descr
 ## A.5 Visual state (transitional — intentional)
 
 * Design tokens and fonts are live (see B.2): base is Manrope on paper `#F7F3EC` with ink text; the app shell uses `bg-paper text-ink`.
-* New A1/A3 code (primitives, directory, `/kesfet`, `/kategoriler/:slug`) is on the new tokens. The remaining chrome and pages (Header, Footer, Hero, CTA, HowItWorks, FeaturedSellers, Categories, homepage, Pricing, About, Apply, 404) still carry the old blue style (inline hexes like `#4e7bab`, `rounded-[2rem]`). This mixed look is deliberate: each pending stage converts only the files it touches, and A8 is the hard gate where old hexes/radii/copy must reach zero.
+* Converted to the new design system: primitives, directory (`/kesfet`, `/kategoriler/:slug`), collections, contact, header/footer, auth/legal placeholders and the homepage. Still carrying the old blue style: Pricing, About, Apply, 404 and the `/kategoriler` copy. This mixed look is deliberate: each pending stage converts only the files it touches, and A8 is the hard gate where old hexes/radii/copy must reach zero.
 * `.card-soft` in `index.css` is **deprecated**: still consumed by old components, will be deleted in A8. Do not use it in new code.
 
 ---
@@ -123,9 +125,8 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 ## B.4 Target IA and stages (pending — route → stage that builds it)
 
-A1, A2, A3, A3.1, A4 and A5 are done — see Part A. Remaining stages:
+A1, A2, A3, A3.1, A4, A5 and A6 are done — see Part A. Remaining stages:
 
-* A6 — New homepage (search hero → categories → new businesses → membership band → weekly collection → needs grid → producer story → join CTA).
 * A7 — Business profile actions: Favorilere Ekle (auth dialog), Paylaş (Web Share + fallback), Mağazayı Ziyaret Et.
 * GM — revenue-model transition plan (plan-only turn, required before A8): pricing page redesign to free basic + single Pro (no assumed prices), `planType` → `"free" | "pro"` migration decision, "Sponsorlu" promotion-placement surface draft. Building promotion tools is outside the A0–A11 scope.
 * A8 — Copy/polish sweep, hard gate: old hexes, `rounded-[2*`, `.card-soft`, UI "satıcı" all reach zero. Pricing page converts per the approved GM plan.
