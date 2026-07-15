@@ -1,7 +1,31 @@
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { Heart, Share2 } from "lucide-react";
 import SellerImage from "../components/SellerImage";
-import { sellers } from "../data/mockData";
+import Button from "../components/ui/Button";
+import FavoriteDialog from "../components/seller/FavoriteDialog";
+import { sellers, type Seller } from "../data/mockData";
 import usePageTitle from "../hooks/usePageTitle";
+
+type PrimaryAction = { label: string; href: string } | null;
+
+function getPrimaryAction(satici: Seller): PrimaryAction {
+  if (satici.websiteUrl) {
+    return { label: "Web Sitesini Ziyaret Et", href: satici.websiteUrl };
+  }
+
+  if (satici.instagramUrl) {
+    return { label: "Instagram'da Gör", href: satici.instagramUrl };
+  }
+
+  if (satici.whatsappUrl) {
+    return { label: "WhatsApp ile İletişime Geç", href: satici.whatsappUrl };
+  }
+
+  return null;
+}
+
+type ShareStatus = "idle" | "copied" | "error";
 
 function SellerDetailPage() {
   const { slug } = useParams();
@@ -11,6 +35,45 @@ function SellerDetailPage() {
   usePageTitle(
     satici ? `${satici.name} | Microvend` : "Satıcı bulunamadı | Microvend"
   );
+
+  const [isFavoriteDialogOpen, setFavoriteDialogOpen] = useState(false);
+  const [shareStatus, setShareStatus] = useState<ShareStatus>("idle");
+  const favoriteTriggerWrapperRef = useRef<HTMLDivElement>(null);
+  const shareResetTimeoutRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    return () => window.clearTimeout(shareResetTimeoutRef.current);
+  }, []);
+
+  function closeFavoriteDialog() {
+    setFavoriteDialogOpen(false);
+    favoriteTriggerWrapperRef.current?.querySelector("button")?.focus();
+  }
+
+  async function handleShare() {
+    if (!satici) return;
+
+    const shareData = { title: satici.name, url: window.location.href };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return;
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareStatus("copied");
+    } catch {
+      setShareStatus("error");
+    }
+
+    window.clearTimeout(shareResetTimeoutRef.current);
+    shareResetTimeoutRef.current = window.setTimeout(() => setShareStatus("idle"), 2000);
+  }
 
   if (!satici) {
     return (
@@ -28,6 +91,8 @@ function SellerDetailPage() {
       </div>
     );
   }
+
+  const primaryAction = getPrimaryAction(satici);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-24">
@@ -75,34 +140,48 @@ function SellerDetailPage() {
         </p>
       </div>
 
-      <div className="mb-16 flex flex-wrap items-center justify-center gap-3">
-        <a
-          href={satici.instagramUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-2xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
-        >
-          Instagram
-        </a>
+      <div className="mb-16 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+        {primaryAction && (
+          <Button
+            href={primaryAction.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto"
+          >
+            {primaryAction.label}
+          </Button>
+        )}
 
-        <a
-          href={satici.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-2xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
-        >
-          WhatsApp
-        </a>
+        <div ref={favoriteTriggerWrapperRef} className="contents">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setFavoriteDialogOpen(true)}
+            className="w-full sm:w-auto"
+          >
+            <Heart size={16} aria-hidden="true" />
+            Favorilere Ekle
+          </Button>
+        </div>
 
-        <a
-          href={satici.websiteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-2xl border border-[#dbe7f2] px-5 py-3 text-sm text-[#4e7bab] transition hover:bg-[#edf3fa]"
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleShare}
+          className="w-full sm:w-auto"
         >
-          Web Sitesi
-        </a>
+          <Share2 size={16} aria-hidden="true" />
+          <span aria-live="polite">
+            {shareStatus === "copied"
+              ? "Bağlantı kopyalandı"
+              : shareStatus === "error"
+                ? "Kopyalanamadı"
+                : "Paylaş"}
+          </span>
+        </Button>
       </div>
+
+      <FavoriteDialog open={isFavoriteDialogOpen} onClose={closeFavoriteDialog} />
 
       <div className="mb-16 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="card-soft rounded-[2rem] bg-white p-8 md:p-10">
