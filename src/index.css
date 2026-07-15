@@ -37,9 +37,3 @@ select,
 textarea {
   font-family: inherit;
 }
-
-/* deprecated: eski mavi kart stili — A8 süpürme aşamasında silinecek, yeni kodda kullanma */
-.card-soft {
-  border: 1px solid #eef3f8;
-  box-shadow: 0 8px 30px rgba(78, 123, 171, 0.06);
-}

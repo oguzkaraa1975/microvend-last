@@ -33,7 +33,7 @@ function SellerDetailPage() {
   const satici = sellers.find((item) => item.slug === slug);
 
   usePageTitle(
-    satici ? `${satici.name} | Microvend` : "Satıcı bulunamadı | Microvend"
+    satici ? `${satici.name} | Microvend` : "İşletme bulunamadı | Microvend"
   );
 
   const [isFavoriteDialogOpen, setFavoriteDialogOpen] = useState(false);
@@ -78,15 +78,12 @@ function SellerDetailPage() {
   if (!satici) {
     return (
       <div className="mx-auto max-w-7xl px-6 py-24">
-        <h1 className="mb-4 text-4xl font-light text-gray-900">
-          Satıcı bulunamadı.
+        <h1 className="mb-4 font-display text-4xl text-ink">
+          İşletme bulunamadı.
         </h1>
 
-        <Link
-          to="/saticilar"
-          className="text-[#4e7bab] transition hover:text-[#6b91b9]"
-        >
-          ← Satıcılara dön
+        <Link to="/kesfet" className="text-brand transition hover:text-brand-dark">
+          ← İşletmelere dön
         </Link>
       </div>
     );
@@ -97,10 +94,10 @@ function SellerDetailPage() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-24">
       <Link
-        to="/saticilar"
-        className="mb-10 inline-block text-sm text-[#4e7bab] transition hover:text-[#6b91b9]"
+        to="/kesfet"
+        className="mb-10 inline-block text-sm text-brand transition hover:text-brand-dark"
       >
-        ← Satıcılara dön
+        ← İşletmelere dön
       </Link>
 
       <div className="relative mb-16">
@@ -109,7 +106,7 @@ function SellerDetailPage() {
           alt={`${satici.name} kapak görseli`}
           label={satici.name}
           loading="eager"
-          className="h-72 w-full rounded-[2.5rem] md:h-96"
+          className="h-72 w-full rounded-md md:h-96"
         />
 
         <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
@@ -119,23 +116,23 @@ function SellerDetailPage() {
             label={satici.name}
             variant="logo"
             loading="eager"
-            className="card-soft h-24 w-24 rounded-2xl border-4 border-white bg-white md:h-28 md:w-28"
+            className="h-24 w-24 rounded-sm border-4 border-paper bg-white shadow-sm md:h-28 md:w-28"
           />
         </div>
       </div>
 
       <div className="mx-auto mb-12 max-w-3xl pt-6 text-center">
-        <span className="mb-4 inline-block rounded-full bg-[#edf3fa] px-4 py-1.5 text-sm text-[#4e7bab]">
+        <span className="mb-4 inline-block rounded-sm bg-ink/5 px-4 py-1.5 text-sm text-brand">
           {satici.categoryName}
         </span>
 
-        <h1 className="mb-3 text-5xl font-light tracking-tight text-gray-900 md:text-6xl">
+        <h1 className="mb-3 font-display text-5xl tracking-tight text-ink md:text-6xl">
           {satici.name}
         </h1>
 
-        <p className="mb-6 text-sm text-gray-500">{satici.city}</p>
+        <p className="mb-6 text-sm text-muted">{satici.city}</p>
 
-        <p className="text-lg font-light leading-9 text-gray-600">
+        <p className="text-lg leading-9 text-muted">
           {satici.shortDescription}
         </p>
       </div>
@@ -184,50 +181,50 @@ function SellerDetailPage() {
       <FavoriteDialog open={isFavoriteDialogOpen} onClose={closeFavoriteDialog} />
 
       <div className="mb-16 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="card-soft rounded-[2rem] bg-white p-8 md:p-10">
-          <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
+        <div className="rounded-md border border-ink/10 bg-white p-8 md:p-10">
+          <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-clay">
             Hikaye
           </p>
 
-          <h2 className="mb-6 text-3xl font-light text-gray-900">
+          <h2 className="mb-6 font-display text-3xl text-ink">
             Markanın arkasındaki yolculuk
           </h2>
 
-          <p className="font-light leading-8 text-gray-600">{satici.story}</p>
+          <p className="leading-8 text-muted">{satici.story}</p>
         </div>
 
-        <aside className="card-soft h-fit rounded-[2rem] bg-white p-8">
-          <h2 className="mb-6 text-2xl font-light text-gray-900">
-            Satıcı Bilgileri
+        <aside className="h-fit rounded-md border border-ink/10 bg-white p-8">
+          <h2 className="mb-6 font-display text-2xl text-ink">
+            İşletme Bilgileri
           </h2>
 
           <div className="space-y-5 text-sm">
             <div>
-              <p className="mb-1 text-gray-400">Konum</p>
-              <p className="text-gray-700">{satici.location}</p>
+              <p className="mb-1 text-muted">Konum</p>
+              <p className="text-ink">{satici.location}</p>
             </div>
 
             <div>
-              <p className="mb-1 text-gray-400">Şehir</p>
-              <p className="text-gray-700">{satici.city}</p>
+              <p className="mb-1 text-muted">Şehir</p>
+              <p className="text-ink">{satici.city}</p>
             </div>
 
             <div>
-              <p className="mb-1 text-gray-400">Kuruluş Yılı</p>
-              <p className="text-gray-700">{satici.foundedYear}</p>
+              <p className="mb-1 text-muted">Kuruluş Yılı</p>
+              <p className="text-ink">{satici.foundedYear}</p>
             </div>
 
             <div>
-              <p className="mb-1 text-gray-400">Kategori</p>
-              <p className="text-gray-700">{satici.categoryName}</p>
+              <p className="mb-1 text-muted">Kategori</p>
+              <p className="text-ink">{satici.categoryName}</p>
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-2 border-t border-[#eef3f8] pt-6">
+          <div className="mt-8 flex flex-wrap gap-2 border-t border-ink/10 pt-6">
             {satici.tags.map((etiket) => (
               <span
                 key={etiket}
-                className="rounded-full bg-[#edf3fa] px-3 py-1 text-sm text-[#4e7bab]"
+                className="rounded-sm bg-ink/5 px-3 py-1 text-sm text-brand"
               >
                 {etiket}
               </span>
@@ -239,11 +236,11 @@ function SellerDetailPage() {
       {satici.galleryImages.length > 0 && (
         <div className="mb-16">
           <div className="mb-8">
-            <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
+            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-clay">
               Vitrin
             </p>
 
-            <h2 className="text-3xl font-light text-gray-900">
+            <h2 className="font-display text-3xl text-ink">
               Vitrinden seçkiler.
             </h2>
           </div>
@@ -255,36 +252,31 @@ function SellerDetailPage() {
                 src={gorsel.url}
                 alt={gorsel.alt}
                 label={satici.name}
-                className="aspect-[4/3] rounded-[1.5rem]"
+                className="aspect-[4/3] rounded-sm"
               />
             ))}
           </div>
         </div>
       )}
 
-      <div className="card-soft overflow-hidden rounded-[2rem] bg-[#4e7bab] px-10 py-16 text-white">
+      <div className="overflow-hidden rounded-md bg-brand px-10 py-16 text-paper">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-4 text-sm uppercase tracking-[0.2em] text-blue-100">
-            Doğrudan Satıcıya Ulaşın
+          <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-paper/70">
+            Doğrudan İşletmeye Ulaşın
           </p>
 
-          <h2 className="mb-6 text-4xl font-light leading-tight">
+          <h2 className="mb-6 font-display text-4xl leading-tight">
             {satici.name} ile tanışmaya hazır mısınız?
           </h2>
 
-          <p className="mb-8 text-lg font-light leading-8 text-blue-50">
-            Ürünleri inceleyin, koleksiyonları keşfedin ve satıcının resmi
+          <p className="mb-8 text-lg leading-8 text-paper/80">
+            Ürünleri inceleyin, koleksiyonları keşfedin ve işletmenin resmi
             kanalına tek tıkla geçiş yapın.
           </p>
 
-          <a
-            href={satici.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block rounded-2xl bg-white px-8 py-4 text-[#4e7bab] transition hover:bg-gray-100"
-          >
-            Satıcının kanalına git
-          </a>
+          <Button href={satici.websiteUrl} target="_blank" rel="noopener noreferrer" variant="inverted">
+            İşletmenin kanalına git
+          </Button>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { categories } from "../data/mockData";
+import Button from "../components/ui/Button";
 import usePageTitle from "../hooks/usePageTitle";
 
 type BasvuruFormu = {
@@ -31,7 +32,7 @@ const emailGecerliMi = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 function ApplyPage() {
-  usePageTitle("Satıcı Başvurusu | Microvend");
+  usePageTitle("İşletme Başvurusu | Microvend");
 
   const [form, setForm] = useState<BasvuruFormu>(bosForm);
   const [hataMesaji, setHataMesaji] = useState("");
@@ -114,29 +115,29 @@ function ApplyPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-24">
       <div className="mb-12 max-w-3xl">
-        <p className="mb-4 text-sm uppercase tracking-[0.2em] text-[#4e7bab]">
-          Satıcı Başvurusu
+        <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-clay">
+          İşletme Başvurusu
         </p>
 
-        <h1 className="mb-6 text-5xl font-light tracking-tight">
+        <h1 className="mb-6 font-display text-5xl tracking-tight text-ink">
           Microvend'e katılın.
         </h1>
 
-        <p className="text-lg leading-8 text-gray-600">
+        <p className="text-lg leading-8 text-muted">
           Küçük işletmenizi veya bağımsız markanızı platformda sergilemek için
           başvuru formunu doldurun.
         </p>
       </div>
 
-      <div className="rounded-[2rem] border border-gray-200 bg-white p-8 md:p-10">
+      <div className="rounded-md border border-ink/10 bg-white p-8 md:p-10">
         <form className="grid gap-8" onSubmit={handleSubmit} noValidate>
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <label
                 htmlFor="markaAdi"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
-                Marka Adı <span className="text-[#4e7bab]">*</span>
+                Marka Adı <span className="text-clay">*</span>
               </label>
 
               <input
@@ -147,16 +148,16 @@ function ApplyPage() {
                   alaniGuncelle("markaAdi", event.target.value)
                 }
                 placeholder="Örn: Luna Atölye"
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
 
             <div>
               <label
                 htmlFor="adSoyad"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
-                Ad Soyad <span className="text-[#4e7bab]">*</span>
+                Ad Soyad <span className="text-clay">*</span>
               </label>
 
               <input
@@ -167,7 +168,7 @@ function ApplyPage() {
                   alaniGuncelle("adSoyad", event.target.value)
                 }
                 placeholder="Ad Soyad"
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
           </div>
@@ -176,9 +177,9 @@ function ApplyPage() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
-                E-Posta <span className="text-[#4e7bab]">*</span>
+                E-Posta <span className="text-clay">*</span>
               </label>
 
               <input
@@ -187,14 +188,14 @@ function ApplyPage() {
                 value={form.email}
                 onChange={(event) => alaniGuncelle("email", event.target.value)}
                 placeholder="ornek@mail.com"
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
 
             <div>
               <label
                 htmlFor="telefon"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
                 Telefon
               </label>
@@ -207,7 +208,7 @@ function ApplyPage() {
                   alaniGuncelle("telefon", event.target.value)
                 }
                 placeholder="+90..."
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
           </div>
@@ -216,9 +217,9 @@ function ApplyPage() {
             <div>
               <label
                 htmlFor="kategori"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
-                Kategori <span className="text-[#4e7bab]">*</span>
+                Kategori <span className="text-clay">*</span>
               </label>
 
               <select
@@ -227,7 +228,7 @@ function ApplyPage() {
                 onChange={(event) =>
                   alaniGuncelle("kategori", event.target.value)
                 }
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               >
                 <option value="">Kategori seçin</option>
                 {categories.map((kategori) => (
@@ -241,9 +242,9 @@ function ApplyPage() {
             <div>
               <label
                 htmlFor="sehir"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
-                Şehir <span className="text-[#4e7bab]">*</span>
+                Şehir <span className="text-clay">*</span>
               </label>
 
               <input
@@ -252,7 +253,7 @@ function ApplyPage() {
                 value={form.sehir}
                 onChange={(event) => alaniGuncelle("sehir", event.target.value)}
                 placeholder="İstanbul"
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
           </div>
@@ -261,7 +262,7 @@ function ApplyPage() {
             <div>
               <label
                 htmlFor="instagram"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
                 Instagram
               </label>
@@ -274,14 +275,14 @@ function ApplyPage() {
                   alaniGuncelle("instagram", event.target.value)
                 }
                 placeholder="@kullaniciadi"
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
 
             <div>
               <label
                 htmlFor="website"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-ink"
               >
                 Web Sitesi
               </label>
@@ -294,7 +295,7 @@ function ApplyPage() {
                   alaniGuncelle("website", event.target.value)
                 }
                 placeholder="https://"
-                className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
               />
             </div>
           </div>
@@ -302,9 +303,9 @@ function ApplyPage() {
           <div>
             <label
               htmlFor="aciklama"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-ink"
             >
-              Kısa Açıklama <span className="text-[#4e7bab]">*</span>
+              Kısa Açıklama <span className="text-clay">*</span>
             </label>
 
             <textarea
@@ -315,7 +316,7 @@ function ApplyPage() {
                 alaniGuncelle("aciklama", event.target.value)
               }
               placeholder="İşletmenizi ve ürünlerinizi kısaca anlatın..."
-              className="w-full rounded-2xl border border-gray-300 px-4 py-4 outline-none transition focus:border-[#4e7bab]"
+              className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
             />
           </div>
 
@@ -323,9 +324,9 @@ function ApplyPage() {
             <div
               ref={mesajRef}
               role="status"
-              className="rounded-2xl border border-[#dbe7f2] bg-[#edf3fa] px-5 py-4"
+              className="rounded-sm border border-brand/20 bg-brand/5 px-5 py-4"
             >
-              <p className="font-light text-[#4e7bab]">{basariMesaji}</p>
+              <p className="text-brand">{basariMesaji}</p>
             </div>
           )}
 
@@ -333,26 +334,22 @@ function ApplyPage() {
             <div
               ref={mesajRef}
               role="alert"
-              className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4"
+              className="rounded-sm border border-red-200 bg-red-50 px-5 py-4"
             >
-              <p className="font-light text-red-700">{hataMesaji}</p>
+              <p className="text-red-700">{hataMesaji}</p>
             </div>
           )}
 
-          <div className="flex flex-col gap-4 border-t border-gray-100 pt-6 md:flex-row md:items-center md:justify-between">
-            <p className="max-w-2xl text-sm leading-6 text-gray-500">
+          <div className="flex flex-col gap-4 border-t border-ink/10 pt-6 md:flex-row md:items-center md:justify-between">
+            <p className="max-w-2xl text-sm leading-6 text-muted">
               Başvurular editör incelemesinden sonra yayınlanır. Microvend bir
               pazaryeri değildir; satış ve ödeme işlemleri platform dışında
               gerçekleşir.
             </p>
 
-            <button
-              type="submit"
-              disabled={gonderiliyor}
-              className="rounded-2xl bg-[#4e7bab] px-8 py-4 text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
-            >
+            <Button type="submit" disabled={gonderiliyor}>
               {gonderiliyor ? "Gönderiliyor..." : "Başvuruyu Gönder"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
