@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { categories } from "../data/mockData";
 import Button from "../components/ui/Button";
+import { supabase } from "../lib/supabase";
 import usePageTitle from "../hooks/usePageTitle";
 
 type BasvuruFormu = {
@@ -35,6 +36,7 @@ function ApplyPage() {
   usePageTitle("İşletme Başvurusu | Microvend");
 
   const [form, setForm] = useState<BasvuruFormu>(bosForm);
+  const [honeypot, setHoneypot] = useState("");
   const [hataMesaji, setHataMesaji] = useState("");
   const [basariMesaji, setBasariMesaji] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
@@ -103,7 +105,43 @@ function ApplyPage() {
     setHataMesaji("");
     setBasariMesaji("");
 
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    // Honeypot doluysa bot: kayıt atılmaz, bota "başarılı" gösterilir.
+    if (honeypot.trim()) {
+      setForm(bosForm);
+      setBasariMesaji(
+        "Başvurunuz alındı. Microvend ekibi en kısa sürede sizinle iletişime geçecek."
+      );
+      setGonderiliyor(false);
+      return;
+    }
+
+    if (!supabase) {
+      setHataMesaji(
+        "Başvuru şu anda gönderilemiyor. Lütfen daha sonra tekrar deneyin."
+      );
+      setGonderiliyor(false);
+      return;
+    }
+
+    const { error } = await supabase.from("applications").insert({
+      full_name: form.adSoyad.trim(),
+      brand_name: form.markaAdi.trim(),
+      category_slug: form.kategori,
+      city: form.sehir.trim(),
+      email: form.email.trim(),
+      phone: form.telefon.trim() || null,
+      instagram: form.instagram.trim() || null,
+      website: form.website.trim() || null,
+      description: form.aciklama.trim(),
+    });
+
+    if (error) {
+      setHataMesaji(
+        "Başvuru gönderilirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin."
+      );
+      setGonderiliyor(false);
+      return;
+    }
 
     setForm(bosForm);
     setBasariMesaji(
@@ -131,6 +169,19 @@ function ApplyPage() {
 
       <div className="rounded-md border border-ink/10 bg-white p-8 md:p-10">
         <form className="grid gap-8" onSubmit={handleSubmit} noValidate>
+          {/* Honeypot: kullanıcıya görünmez, botlar doldurur */}
+          <div aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
+            <label htmlFor="firma-web">Bu alanı boş bırakın</label>
+            <input
+              id="firma-web"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honeypot}
+              onChange={(event) => setHoneypot(event.target.value)}
+            />
+          </div>
+
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <label
@@ -232,7 +283,7 @@ function ApplyPage() {
               >
                 <option value="">Kategori seçin</option>
                 {categories.map((kategori) => (
-                  <option key={kategori.slug} value={kategori.name}>
+                  <option key={kategori.slug} value={kategori.slug}>
                     {kategori.name}
                   </option>
                 ))}
