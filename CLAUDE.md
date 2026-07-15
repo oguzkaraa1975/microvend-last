@@ -1,6 +1,6 @@
 # CLAUDE.md — Microvend Project Guide
 
-Last updated: 2026-07-14 (revision brief applied — stage A0 of the approved plan).
+Last updated: 2026-07-15 (A8 GM slice applied — pricing page + `planType` migration per the approved GM plan).
 
 This document has two parts:
 
@@ -38,14 +38,16 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 * Organic ranking is never sold. Paid membership or promotion never buys organic position.
 * Trust labels are never sold: "Editörün seçimi", "Güvenilir işletme", "Editör onaylı" or similar. Editorial selection cannot be bought.
 * Sponsored content is always explicitly labeled "Sponsorlu" and never mixes into organic results.
-* **Prices are not final. Never write assumed prices anywhere** — use honest "pricing will be announced" copy until amounts are decided.
-* **Do not change the current multi-tier package UI or `Seller.planType` ("silver"/"gold"/"premium") yet.** The transition to free/pro + promotion add-ons follows the GM transition plan, prepared as a plan-only turn before stage A8 (see B.4).
+* **Approved prices (GM plan, 2026-07-15) are the only prices allowed in the UI:** Pro at **₺899/month or ₺8.990/year**, with a 30-day free trial (no card details, no auto-renewal; unpaid trials revert to Free — the business picks the 1 gallery image and 1 sales channel that stay, nothing is deleted, Pro content goes inactive). Any other amount is forbidden. Sponsorlu Vitrin pricing is **not announced** until traffic data exists — use honest "fiyatlandırma yakında açıklanacak" copy.
+* **Collection statement (binding, verbatim in UI):** "Microvend, işletmelerin müşterilerinden ödeme almasına aracılık etmez ve satış komisyonu kesmez. MVP'de Pro ve Sponsorlu Vitrin ücretleri platform dışında manuel olarak tahsil edilir."
+* The free/pro transition was applied in the A8 GM slice: `Seller.planType` is now `"free" | "pro"` and the pricing page shows the Free/Pro model. Free–Pro limits (quotas, trial, expiry, stats) are **product description only** — no entitlement/quota/subscription logic exists until auth ships (A10+).
+* Sponsorlu Vitrin is the **only** homepage sponsor product (a separate, always-"Sponsorlu"-labeled section); no second "homepage sponsored slot" product exists. Haftanın Seçkisi stays editorial.
 
 ---
 
-# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A6)
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A8 GM slice)
 
-Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5 and A6 are done. Their outcomes are described below.
+Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn and the A8 GM slice (pricing page + `planType` migration) are done. Their outcomes are described below.
 
 ## A.1 Stack
 
@@ -73,12 +75,14 @@ Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5 and A6 are done. Their outcomes are d
 * Homepage (A6): section order = search hero → Kategorilerde keşfet → Yeni katılan işletmeler → membership band → Bu haftanın seçkisi → İhtiyacına göre keşfet → Üreticinin hikâyesi → business join CTA. Components: `Hero` (rewritten: eyebrow/h1/description + search form → `/kesfet?q=&sehir=` via URLSearchParams, empty params omitted; asymmetric photo mosaic from `featuredStory.image` + existing seller covers, no new image URLs), `Categories` (photo tiles → `/kategoriler/:slug`), `home/NewBusinesses` (`getNewestSellers`, "Yeni" badge, → `/kesfet?yeni=1`), `home/MembershipBand` (thin-bordered, secondary weight, → `/uye-ol` + `/giris`), `home/WeeklyPick` (newest collection by `publishedAt`, no hardcoded id; shows "Sponsorlu" label + transparency line if sponsored), `home/NeedsGrid` (4 paths with lucide icons; `?q=hediye`, `?odak=sehir`, `?q=kişiye özel`, `?q=sürdürülebilir`), `home/ProducerStory` (`featuredStory`; renders nothing if its seller is missing), `CTA` (brand band, "Temel profil ücretsiz. Komisyon yok."). Single `h1` (hero). `HowItWorks` and `FeaturedSellers` removed. `index.html` title/description/OG updated to the directory positioning.
 * `odak` (A5/A6) is a **focus hint, not a filter**: `/kesfet?odak=ara` focuses the search input, `?odak=sehir` focuses the city select (`DirectoryResults focusTarget`); the param is stripped from the URL with `replace` after use and never affects results.
 * Global chrome (A5): `Header` rebuilt on the design system — desktop single line at `lg`+ in the exact order microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled); "Ara" is icon-only below `xl` and links to `/kesfet?odak=ara` (autofocuses the search input via `DirectoryResults autoFocusSearch`). Mobile: icon hamburger + full-width panel, `aria-expanded`/`aria-controls`, closes on Escape and on link click. `Footer` rebuilt with 5 link columns (Keşfet / Kategoriler / Hakkımızda / Kaynaklar / Yasal) — **only real routes are linked**; category links are generated from the data layer. `pages/AuthPlaceholderPage` (variant-driven) and `pages/LegalDraftPage` (variant-driven) added.
-* Still on the old blue style until their own stages: Pricing (plan data hardcoded inside the component), About, Apply, 404 and the `/kategoriler` copy. Hook: `usePageTitle`.
+* Profile actions (A7): `seller/FavoriteDialog` (auth-prompt dialog — no real favorites, no storage; `role="dialog"`, Escape/backdrop/close-button dismissal, focus returned to trigger) and a new action strip on `SellerDetailPage`: primary external action picked as `websiteUrl` → `instagramUrl` → `whatsappUrl` with the label matching the actual target ("Web Sitesini Ziyaret Et" / "Instagram'da Gör" / "WhatsApp ile İletişime Geç", hidden if no channel), Favorilere Ekle (opens the dialog), Paylaş (`navigator.share`, cancel is silent; clipboard fallback with `aria-live` "Bağlantı kopyalandı"/"Kopyalanamadı" feedback). Only the action strip is on the new design system; the rest of the page stays old-style until the A8 sweep.
+* Pricing (A8 GM slice): `Pricing.tsx` rebuilt on the design system — Free/Pro comparison (Free: logo+cover outside the gallery quota, 1 gallery image, 1 chosen sales channel, equal organic visibility; Pro: 12 images, multi-channel, in-profile showcase, extended story, priority support, stats marked "yakında"), approved prices ₺899/ay–₺8.990/yıl, 30-day trial terms, Sponsorlu Vitrin section (price "yakında açıklanacak", CTA → `/iletisim`), verbatim collection statement. Free/Pro CTAs → `/basvuru`. All limits are copy only — no quota/trial/subscription logic.
+* Still on the old blue style until the A8 sweep: About, Apply, 404, the `/kategoriler` copy and the non-action sections of `SellerDetailPage`. Hook: `usePageTitle`.
 
 ## A.4 Implemented data model (`src/data/mockData.ts`)
 
 * `Category { id, slug, name, description, image, sellerCount (computed), featured }`
-* `Seller { …, joinedAt: string (ISO), shippingScope: "local" | "regional" | "nationwide", … }` (all prior fields kept, incl. `planType`).
+* `Seller { …, joinedAt: string (ISO), shippingScope: "local" | "regional" | "nationwide", planType: "free" | "pro", … }` (all prior fields kept; `planType` migrated from silver/gold/premium in the A8 GM slice — s1/s2/s3 are `pro` as Pro-only UI test data, the other 9 are `free`).
 * `Collection { id, slug, title, description, intro, coverImage, sellerIds[], sponsored, publishedAt }`, `FeaturedStory { sellerId, title, excerpt, quote?, image }`.
 * 12 sellers, 6 categories (new taxonomy: Seramik / Ev & Yaşam / Tekstil / Takı / Doğal Ürünler / Kırtasiye). The original 6 seller `id`/`slug` values are preserved.
 * 3 collections (one `sponsored: true` — dev/test only, must be `false` in production; see B.7) and one `featuredStory`.
@@ -87,7 +91,7 @@ Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5 and A6 are done. Their outcomes are d
 ## A.5 Visual state (transitional — intentional)
 
 * Design tokens and fonts are live (see B.2): base is Manrope on paper `#F7F3EC` with ink text; the app shell uses `bg-paper text-ink`.
-* Converted to the new design system: primitives, directory (`/kesfet`, `/kategoriler/:slug`), collections, contact, header/footer, auth/legal placeholders and the homepage. Still carrying the old blue style: Pricing, About, Apply, 404 and the `/kategoriler` copy. This mixed look is deliberate: each pending stage converts only the files it touches, and A8 is the hard gate where old hexes/radii/copy must reach zero.
+* Converted to the new design system: primitives, directory (`/kesfet`, `/kategoriler/:slug`), collections, contact, header/footer, auth/legal placeholders, the homepage, the pricing page and the profile action strip. Still carrying the old blue style: About, Apply, 404, the `/kategoriler` copy and the non-action sections of `SellerDetailPage`. This mixed look is deliberate: each pending stage converts only the files it touches, and the remaining A8 sweep is the hard gate where old hexes/radii/copy must reach zero.
 * `.card-soft` in `index.css` is **deprecated**: still consumed by old components, will be deleted in A8. Do not use it in new code.
 
 ---
@@ -125,11 +129,9 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 ## B.4 Target IA and stages (pending — route → stage that builds it)
 
-A1, A2, A3, A3.1, A4, A5 and A6 are done — see Part A. Remaining stages:
+A1, A2, A3, A3.1, A4, A5, A6, A7, GM and the A8 GM slice are done — see Part A. The approved GM plan lives at `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (MVP = Free + Pro + Sponsorlu Vitrin only; paid badge product rejected; category sponsorship / search boost / first-100 campaign deferred as separate decisions). Remaining stages:
 
-* A7 — Business profile actions: Favorilere Ekle (auth dialog), Paylaş (Web Share + fallback), Mağazayı Ziyaret Et.
-* GM — revenue-model transition plan (plan-only turn, required before A8): pricing page redesign to free basic + single Pro (no assumed prices), `planType` → `"free" | "pro"` migration decision, "Sponsorlu" promotion-placement surface draft. Building promotion tools is outside the A0–A11 scope.
-* A8 — Copy/polish sweep, hard gate: old hexes, `rounded-[2*`, `.card-soft`, UI "satıcı" all reach zero. Pricing page converts per the approved GM plan.
+* A8 (remaining sweep) — Copy/polish sweep, hard gate: old hexes, `rounded-[2*`, `.card-soft`, UI "satıcı" all reach zero (About, Apply, 404, `/kategoriler` copy, `SellerDetailPage` non-action sections). Pricing conversion already done in the GM slice.
 * A9 — Supabase applications (see B.6).
 * A10 — Supabase auth + favorites; placeholders replaced with real pages.
 * A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check, real contact address on `/iletisim`).
