@@ -17,6 +17,7 @@ Gelir modeli dilimi ve genel cila turu push edildi. `ApplyPage`, `AboutPage`, `N
 **A9 — Supabase başvuruları** (bkz. CLAUDE.md B.6): anon için yalnızca insert, sütun bazlı `GRANT INSERT`, `CHECK` kısıtları, sunucu kontrollü `status`, honeypot + genel pilottan önce Turnstile/Edge Function/rate-limit'ten biri.
 
 ## Bilinen açık riskler
+- **Üretim kapısı (bağlayıcı):** Turnstile + sunucu tarafı rate-limit eklenmeden anonim başvuru formu genel üretime açılmaz (A9'daki honeypot tek başına yeterli değil).
 - Backend, auth, ödeme, abonelik ve gerçek kota mantığı henüz yok — Free/Pro sınırlamaları, deneme süresi ve istatistikler yalnızca ürün açıklaması olarak gösteriliyor (en erken A10+ ile gerçek yetkilendirme).
 - Sponsorlu Vitrin fiyatı trafik verisi oluşana kadar açıklanmayacak.
 - Ekran görüntüsü aracı bu ortamda tutarlı çalışmıyor; görsel doğrulamalar DOM ölçümü/erişilebilirlik ağacı ile yapıldı.
