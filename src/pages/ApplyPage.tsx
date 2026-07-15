@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { categories } from "../data/mockData";
 import Button from "../components/ui/Button";
+import FormField from "../components/ui/FormField";
+import FormMessage from "../components/ui/FormMessage";
 import { supabase } from "../lib/supabase";
 import usePageTitle from "../hooks/usePageTitle";
 
@@ -183,85 +185,43 @@ function ApplyPage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="markaAdi"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                Marka Adı <span className="text-clay">*</span>
-              </label>
+            <FormField
+              id="markaAdi"
+              label="Marka Adı"
+              required
+              value={form.markaAdi}
+              onChange={(deger) => alaniGuncelle("markaAdi", deger)}
+              placeholder="Örn: Luna Atölye"
+            />
 
-              <input
-                id="markaAdi"
-                type="text"
-                value={form.markaAdi}
-                onChange={(event) =>
-                  alaniGuncelle("markaAdi", event.target.value)
-                }
-                placeholder="Örn: Luna Atölye"
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="adSoyad"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                Ad Soyad <span className="text-clay">*</span>
-              </label>
-
-              <input
-                id="adSoyad"
-                type="text"
-                value={form.adSoyad}
-                onChange={(event) =>
-                  alaniGuncelle("adSoyad", event.target.value)
-                }
-                placeholder="Ad Soyad"
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
+            <FormField
+              id="adSoyad"
+              label="Ad Soyad"
+              required
+              value={form.adSoyad}
+              onChange={(deger) => alaniGuncelle("adSoyad", deger)}
+              placeholder="Ad Soyad"
+            />
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                E-Posta <span className="text-clay">*</span>
-              </label>
+            <FormField
+              id="email"
+              label="E-Posta"
+              required
+              type="email"
+              value={form.email}
+              onChange={(deger) => alaniGuncelle("email", deger)}
+              placeholder="ornek@mail.com"
+            />
 
-              <input
-                id="email"
-                type="email"
-                value={form.email}
-                onChange={(event) => alaniGuncelle("email", event.target.value)}
-                placeholder="ornek@mail.com"
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="telefon"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                Telefon
-              </label>
-
-              <input
-                id="telefon"
-                type="text"
-                value={form.telefon}
-                onChange={(event) =>
-                  alaniGuncelle("telefon", event.target.value)
-                }
-                placeholder="+90..."
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
+            <FormField
+              id="telefon"
+              label="Telefon"
+              value={form.telefon}
+              onChange={(deger) => alaniGuncelle("telefon", deger)}
+              placeholder="+90..."
+            />
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
@@ -290,65 +250,32 @@ function ApplyPage() {
               </select>
             </div>
 
-            <div>
-              <label
-                htmlFor="sehir"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                Şehir <span className="text-clay">*</span>
-              </label>
-
-              <input
-                id="sehir"
-                type="text"
-                value={form.sehir}
-                onChange={(event) => alaniGuncelle("sehir", event.target.value)}
-                placeholder="İstanbul"
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
+            <FormField
+              id="sehir"
+              label="Şehir"
+              required
+              value={form.sehir}
+              onChange={(deger) => alaniGuncelle("sehir", deger)}
+              placeholder="İstanbul"
+            />
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="instagram"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                Instagram
-              </label>
+            <FormField
+              id="instagram"
+              label="Instagram"
+              value={form.instagram}
+              onChange={(deger) => alaniGuncelle("instagram", deger)}
+              placeholder="@kullaniciadi"
+            />
 
-              <input
-                id="instagram"
-                type="text"
-                value={form.instagram}
-                onChange={(event) =>
-                  alaniGuncelle("instagram", event.target.value)
-                }
-                placeholder="@kullaniciadi"
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="website"
-                className="mb-2 block text-sm font-medium text-ink"
-              >
-                Web Sitesi
-              </label>
-
-              <input
-                id="website"
-                type="text"
-                value={form.website}
-                onChange={(event) =>
-                  alaniGuncelle("website", event.target.value)
-                }
-                placeholder="https://"
-                className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
-              />
-            </div>
+            <FormField
+              id="website"
+              label="Web Sitesi"
+              value={form.website}
+              onChange={(deger) => alaniGuncelle("website", deger)}
+              placeholder="https://"
+            />
           </div>
 
           <div>
@@ -372,23 +299,15 @@ function ApplyPage() {
           </div>
 
           {basariMesaji && (
-            <div
-              ref={mesajRef}
-              role="status"
-              className="rounded-sm border border-brand/20 bg-brand/5 px-5 py-4"
-            >
-              <p className="text-brand">{basariMesaji}</p>
-            </div>
+            <FormMessage ref={mesajRef} tone="info">
+              {basariMesaji}
+            </FormMessage>
           )}
 
           {hataMesaji && (
-            <div
-              ref={mesajRef}
-              role="alert"
-              className="rounded-sm border border-red-200 bg-red-50 px-5 py-4"
-            >
-              <p className="text-red-700">{hataMesaji}</p>
-            </div>
+            <FormMessage ref={mesajRef} tone="error">
+              {hataMesaji}
+            </FormMessage>
           )}
 
           <div className="flex flex-col gap-4 border-t border-ink/10 pt-6 md:flex-row md:items-center md:justify-between">
