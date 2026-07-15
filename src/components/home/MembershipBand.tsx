@@ -27,10 +27,6 @@ function MembershipBand() {
           <Button to="/uye-ol" size="sm">
             Ücretsiz Üye Ol
           </Button>
-
-          <Button to="/giris" variant="secondary" size="sm">
-            Giriş Yap
-          </Button>
         </div>
       </div>
     </section>

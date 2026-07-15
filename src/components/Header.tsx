@@ -8,6 +8,7 @@ const navLinks = [
   { to: "/kesfet", label: "Keşfet" },
   { to: "/kategoriler", label: "Kategoriler" },
   { to: "/seckiler", label: "Seçkiler" },
+  { to: "/ucretlendirme", label: "Ücretlendirme" },
   { to: "/iletisim", label: "İletişim" },
 ];
 
@@ -63,18 +64,14 @@ function Header() {
           <Link
             to={araLink}
             aria-label="Ara"
-            className="inline-flex items-center gap-1.5 text-sm text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            className="inline-flex items-center text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             <Search size={18} aria-hidden="true" />
-            <span className="hidden xl:inline">Ara</span>
           </Link>
 
-          <Link
-            to="/giris"
-            className="text-sm text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-          >
+          <Button to="/giris" variant="secondary" size="sm">
             Giriş Yap
-          </Link>
+          </Button>
 
           <Button to="/uye-ol" variant="secondary" size="sm">
             Üye Ol
