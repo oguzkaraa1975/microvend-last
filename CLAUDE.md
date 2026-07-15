@@ -43,9 +43,9 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 
 ---
 
-# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A4)
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A5)
 
-Stages A0, A1, SEC-1, A2, A3, A3.1 and A4 are done. Their outcomes are described below.
+Stages A0, A1, SEC-1, A2, A3, A3.1, A4 and A5 are done. Their outcomes are described below.
 
 ## A.1 Stack
 
@@ -57,18 +57,21 @@ Stages A0, A1, SEC-1, A2, A3, A3.1 and A4 are done. Their outcomes are described
 
 ## A.2 Implemented routes
 
-`/`, `/kesfet`, `/kategoriler`, `/kategoriler/:slug`, `/seckiler`, `/seckiler/:slug`, `/iletisim`, `/saticilar` (redirects to `/kesfet`, query preserved), `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
+`/`, `/kesfet`, `/kategoriler`, `/kategoriler/:slug`, `/seckiler`, `/seckiler/:slug`, `/iletisim`, `/giris`, `/uye-ol`, `/sifre-sifirlama`, `/favoriler`, `/gizlilik`, `/kullanim-kosullari`, `/saticilar` (redirects to `/kesfet`, query preserved), `/saticilar/:slug`, `/ucretlendirme`, `/basvuru`, `/hakkimizda`, `*` (404).
 
 `/kesfet` is the directory (A3): search + category/city/shipping/new filters and sort, **all URL-driven** (`q`, `category`, `sehir`, `gonderim`, `yeni`, `sort`); invalid values fall back safely. Search is Turkish accent-tolerant (A3.1). Category matching is by `categoryId`. `/kategoriler/:slug` reuses the directory with a locked category.
 
 `/seckiler` + `/seckiler/:slug` (A4): editorial collections, newest-first by `publishedAt`. Sponsored collections show a "Sponsorlu" label (low-radius, not a pill) plus a transparency line on the detail page ("Bu içerik sponsorlu tanıtım alanıdır; editoryal seçim değildir."); non-sponsored show "Microvend Seçkisi". `/iletisim` (A4) is static and honest — no fake form, email, phone, or address (see B.7 for the A11 gate).
 
+`/giris`, `/uye-ol`, `/sifre-sifirlama`, `/favoriler` (A5) are **honest placeholders** — no form fields, nothing simulates auth; dev/preview only, replaced by real pages in A10 (see B.7: public pilot requires A10). `/gizlilik` + `/kullanim-kosullari` (A5) are legal **drafts** with a visible "Taslak" label.
+
 ## A.3 Implemented components & hooks
 
-* Primitives (A1): `ui/Button` (primary/secondary/ghost), `icons/BrandIcons` (WhatsApp/Instagram), `ScrollToTop` (mounted in `App.tsx`). `SectionHeading` and `SellerImage` refreshed to the new design system (flat fallback). `public/icons.svg` removed.
+* Primitives (A1): `ui/Button` (primary/secondary/ghost; `size` sm/md added in A5), `icons/BrandIcons` (WhatsApp/Instagram), `ScrollToTop` (mounted in `App.tsx`). `SectionHeading` and `SellerImage` refreshed to the new design system (flat fallback). `public/icons.svg` removed.
 * Directory (A3): `directory/BusinessCard`, `directory/DirectoryResults`, `directory/newest` (`getNewestSellers` — newest 4 by `joinedAt`, reused by A6), `directory/normalize` (`normalizeSearch`), `RedirectWithQuery`. `SellersPage` removed (absorbed into `/kesfet`).
 * Collections + contact (A4): `pages/CollectionsPage`, `pages/CollectionDetailPage`, `pages/ContactPage`; `data/collections.ts` (`resolveCollectionSellers` — resolves `sellerIds` to existing sellers, order preserved, missing ids dropped, count from resolved). Detail reuses `BusinessCard`/`Button`.
-* Still on the old blue style until their own stages: Header, Footer, Hero, CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component). Hook: `usePageTitle`.
+* Global chrome (A5): `Header` rebuilt on the design system — desktop single line at `lg`+ in the exact order microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled); "Ara" is icon-only below `xl` and links to `/kesfet?odak=ara` (autofocuses the search input via `DirectoryResults autoFocusSearch`). Mobile: icon hamburger + full-width panel, `aria-expanded`/`aria-controls`, closes on Escape and on link click. `Footer` rebuilt with 5 link columns (Keşfet / Kategoriler / Hakkımızda / Kaynaklar / Yasal) — **only real routes are linked**; category links are generated from the data layer. `pages/AuthPlaceholderPage` (variant-driven) and `pages/LegalDraftPage` (variant-driven) added.
+* Still on the old blue style until their own stages: Hero, CTA, Categories, FeaturedSellers, HowItWorks, Pricing (plan data hardcoded inside the component), plus the homepage/About/Apply/404 copy. Hook: `usePageTitle`.
 
 ## A.4 Implemented data model (`src/data/mockData.ts`)
 
@@ -120,9 +123,8 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 ## B.4 Target IA and stages (pending — route → stage that builds it)
 
-A1, A2, A3, A3.1 and A4 are done — see Part A. Remaining stages:
+A1, A2, A3, A3.1, A4 and A5 are done — see Part A. Remaining stages:
 
-* A5 — Header/Footer rebuild; `/giris`, `/uye-ol`, `/sifre-sifirlama`, `/favoriler` as honest placeholders (dev/preview only); `/gizlilik`, `/kullanim-kosullari` as visible DRAFTs.
 * A6 — New homepage (search hero → categories → new businesses → membership band → weekly collection → needs grid → producer story → join CTA).
 * A7 — Business profile actions: Favorilere Ekle (auth dialog), Paylaş (Web Share + fallback), Mağazayı Ziyaret Et.
 * GM — revenue-model transition plan (plan-only turn, required before A8): pricing page redesign to free basic + single Pro (no assumed prices), `planType` → `"free" | "pro"` migration decision, "Sponsorlu" promotion-placement surface draft. Building promotion tools is outside the A0–A11 scope.
@@ -131,7 +133,7 @@ A1, A2, A3, A3.1 and A4 are done — see Part A. Remaining stages:
 * A10 — Supabase auth + favorites; placeholders replaced with real pages.
 * A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check, real contact address on `/iletisim`).
 
-Target header (A5, desktop single line, exact order): microvend · Hakkımızda · Keşfet · Kategoriler · Seçkiler · İletişim · Ara · Giriş Yap · Üye Ol (outlined) · İşletmeni Ekle (filled brand CTA). Ücretlendirme is **not** in the header (reachable via footer / apply flow).
+Header spec (A5, done — see A.3): Ücretlendirme is **not** in the header; it stays reachable via the footer / apply flow. When auth ships (A10), logged-in users see an account menu instead of Üye Ol.
 
 ## B.5 Data model notes (A2 done — see A.4; these constraints remain binding)
 

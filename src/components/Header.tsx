@@ -1,106 +1,152 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Menu, Search, X } from "lucide-react";
+import Button from "./ui/Button";
+
+const navLinks = [
+  { to: "/hakkimizda", label: "Hakkımızda" },
+  { to: "/kesfet", label: "Keşfet" },
+  { to: "/kategoriler", label: "Kategoriler" },
+  { to: "/seckiler", label: "Seçkiler" },
+  { to: "/iletisim", label: "İletişim" },
+];
+
+const araLink = "/kesfet?odak=ara";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    const kapat = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", kapat);
+    return () => window.removeEventListener("keydown", kapat);
+  }, [menuOpen]);
+
+  const kapat = () => setMenuOpen(false);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[#eef3f8] bg-[#fcfcfc]/90 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+    <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/90 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
         <Link
           to="/"
-          className="text-xl font-light tracking-wide text-[#4e7bab] md:text-2xl"
-          onClick={() => setMenuOpen(false)}
+          onClick={kapat}
+          className="font-display text-2xl tracking-tight text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           microvend
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-light md:flex">
-          <Link to="/" className="text-gray-700 transition hover:text-[#4e7bab]">
-            Keşfet
-          </Link>
-
-          <Link
-            to="/saticilar"
-            className="text-gray-700 transition hover:text-[#4e7bab]"
-          >
-            Satıcılar
-          </Link>
-
-          <Link
-            to="/kategoriler"
-            className="text-gray-700 transition hover:text-[#4e7bab]"
-          >
-            Kategoriler
-          </Link>
-
-          <Link
-            to="/ucretlendirme"
-            className="text-gray-700 transition hover:text-[#4e7bab]"
-          >
-            Ücretlendirme
-          </Link>
-
-          <Link
-            to="/hakkimizda"
-            className="text-gray-700 transition hover:text-[#4e7bab]"
-          >
-            Hakkımızda
-          </Link>
+        <nav
+          aria-label="Ana menü"
+          className="hidden items-center gap-x-5 text-sm text-ink lg:flex"
+        >
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-x-3 lg:flex">
           <Link
-            to="/basvuru"
-            className="rounded-xl bg-[#4e7bab] px-5 py-3 text-sm text-white transition hover:bg-[#6b91b9]"
+            to={araLink}
+            aria-label="Ara"
+            className="inline-flex items-center gap-1.5 text-sm text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
-            Satıcı Ol
+            <Search size={18} aria-hidden="true" />
+            <span className="hidden xl:inline">Ara</span>
           </Link>
+
+          <Link
+            to="/giris"
+            className="text-sm text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            Giriş Yap
+          </Link>
+
+          <Button to="/uye-ol" variant="secondary" size="sm">
+            Üye Ol
+          </Button>
+
+          <Button to="/basvuru" size="sm">
+            İşletmeni Ekle
+          </Button>
         </div>
 
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
+          type="button"
+          onClick={() => setMenuOpen((onceki) => !onceki)}
           aria-expanded={menuOpen}
           aria-controls="mobil-menu"
-          className="rounded-xl border border-[#dbe7f2] px-4 py-3 text-sm text-[#4e7bab] md:hidden"
+          aria-label={menuOpen ? "Menüyü kapat" : "Menüyü aç"}
+          className="inline-flex items-center rounded-sm border border-ink/15 p-2 text-ink transition-colors hover:border-ink/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand lg:hidden"
         >
-          Menü
+          {menuOpen ? (
+            <X size={22} aria-hidden="true" />
+          ) : (
+            <Menu size={22} aria-hidden="true" />
+          )}
         </button>
       </div>
 
       {menuOpen && (
         <div
           id="mobil-menu"
-          className="border-t border-[#eef3f8] bg-white px-6 py-5 md:hidden"
+          className="border-t border-ink/10 bg-paper px-6 py-5 lg:hidden"
         >
-          <nav className="flex flex-col gap-4 text-sm font-light text-gray-700">
-            <Link to="/" onClick={() => setMenuOpen(false)}>
-              Keşfet
-            </Link>
+          <nav
+            aria-label="Mobil menü"
+            className="flex flex-col gap-1 text-ink"
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={kapat}
+                className="rounded-sm py-2 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                {link.label}
+              </Link>
+            ))}
 
-            <Link to="/saticilar" onClick={() => setMenuOpen(false)}>
-              Satıcılar
-            </Link>
-
-            <Link to="/kategoriler" onClick={() => setMenuOpen(false)}>
-              Kategoriler
-            </Link>
-
-            <Link to="/ucretlendirme" onClick={() => setMenuOpen(false)}>
-              Ücretlendirme
-            </Link>
-
-            <Link to="/hakkimizda" onClick={() => setMenuOpen(false)}>
-              Hakkımızda
+            <Link
+              to={araLink}
+              onClick={kapat}
+              className="inline-flex items-center gap-1.5 rounded-sm py-2 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            >
+              <Search size={18} aria-hidden="true" />
+              Ara
             </Link>
 
             <Link
-              to="/basvuru"
-              onClick={() => setMenuOpen(false)}
-              className="mt-3 rounded-xl bg-[#4e7bab] px-5 py-3 text-center text-white"
+              to="/giris"
+              onClick={kapat}
+              className="rounded-sm py-2 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
-              Satıcı Ol
+              Giriş Yap
             </Link>
+
+            <div className="mt-3 flex flex-col gap-3">
+              <Button to="/uye-ol" variant="secondary" onClick={kapat}>
+                Üye Ol
+              </Button>
+
+              <Button to="/basvuru" onClick={kapat}>
+                İşletmeni Ekle
+              </Button>
+            </div>
           </nav>
         </div>
       )}

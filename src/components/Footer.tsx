@@ -1,82 +1,95 @@
 import { Link } from "react-router-dom";
+import { categories } from "../data/mockData";
+
+type FooterLink = { to: string; label: string };
+
+const columns: { title: string; links: FooterLink[] }[] = [
+  {
+    title: "Keşfet",
+    links: [
+      { to: "/kesfet", label: "Tüm işletmeler" },
+      { to: "/kesfet?yeni=1", label: "Yeni katılanlar" },
+      { to: "/seckiler", label: "Seçkiler" },
+    ],
+  },
+  {
+    title: "Kategoriler",
+    links: categories.map((kategori) => ({
+      to: `/kategoriler/${kategori.slug}`,
+      label: kategori.name,
+    })),
+  },
+  {
+    title: "Hakkımızda",
+    links: [
+      { to: "/hakkimizda", label: "Hakkımızda" },
+      { to: "/iletisim", label: "İletişim" },
+      { to: "/ucretlendirme", label: "Ücretlendirme" },
+    ],
+  },
+  {
+    title: "Kaynaklar",
+    links: [
+      { to: "/basvuru", label: "İşletmeni Ekle" },
+      { to: "/seckiler", label: "Seçkiler" },
+    ],
+  },
+  {
+    title: "Yasal",
+    links: [
+      { to: "/gizlilik", label: "Gizlilik Politikası" },
+      { to: "/kullanim-kosullari", label: "Kullanım Koşulları" },
+    ],
+  },
+];
 
 function Footer() {
   return (
-    <footer className="border-t border-[#eef3f8] bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid gap-10 md:grid-cols-[1.2fr_1fr_0.8fr] md:items-start">
+    <footer className="border-t border-ink/10 bg-paper">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid gap-12 lg:grid-cols-[1.5fr_3.5fr]">
           <div>
             <Link
               to="/"
-              className="text-xl font-light tracking-wide text-[#4e7bab] md:text-2xl"
+              className="font-display text-2xl tracking-tight text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               microvend
             </Link>
 
-            <p className="mt-3 max-w-md text-sm font-light leading-6 text-gray-500">
-              Mikro işletmeler, butik markalar ve bağımsız üreticiler için
-              komisyonsuz dijital vitrin platformu.
-            </p>
-
-            <p className="mt-3 text-sm font-light leading-6 text-gray-500">
-              İletişim için başvuru formunu kullanabilirsiniz.
+            <p className="mt-4 max-w-xs leading-7 text-muted">
+              Bağımsız üreticileri ve küçük işletmeleri buluşturan açık keşif
+              rehberi.
             </p>
           </div>
 
-          <nav className="grid grid-cols-2 gap-4 text-sm font-light text-gray-600">
-            <Link to="/" className="transition hover:text-[#4e7bab]">
-              Keşfet
-            </Link>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+            {columns.map((column) => (
+              <nav key={column.title} aria-label={column.title}>
+                <p className="mb-4 text-sm font-medium text-ink">
+                  {column.title}
+                </p>
 
-            <Link to="/saticilar" className="transition hover:text-[#4e7bab]">
-              Satıcılar
-            </Link>
-
-            <Link to="/kategoriler" className="transition hover:text-[#4e7bab]">
-              Kategoriler
-            </Link>
-
-            <Link
-              to="/ucretlendirme"
-              className="transition hover:text-[#4e7bab]"
-            >
-              Ücretlendirme
-            </Link>
-
-            <Link to="/basvuru" className="transition hover:text-[#4e7bab]">
-              Başvuru
-            </Link>
-
-            <Link to="/hakkimizda" className="transition hover:text-[#4e7bab]">
-              Hakkımızda
-            </Link>
-          </nav>
-
-          <div className="rounded-2xl border border-[#eef3f8] bg-[#fcfcfc] p-5">
-            <p className="text-sm font-light leading-6 text-gray-500">
-              Satıcı başvuruları editör incelemesinden sonra yayına alınır.
-            </p>
-
-            <Link
-              to="/basvuru"
-              className="mt-4 inline-block rounded-xl bg-[#4e7bab] px-4 py-2 text-sm text-white transition hover:bg-[#6b91b9]"
-            >
-              Satıcı Ol
-            </Link>
+                <ul className="flex flex-col gap-2.5">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        to={link.to}
+                        className="text-sm text-muted transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
           </div>
         </div>
 
-        <div className="mt-10 border-t border-[#eef3f8] pt-6 text-sm font-light text-gray-400">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <p>© 2026 microvend · Tüm hakları saklıdır.</p>
+        <div className="mt-14 flex flex-col gap-3 border-t border-ink/10 pt-6 text-sm text-muted md:flex-row md:items-center md:justify-between">
+          <p>© 2026 microvend</p>
 
-            <p>Komisyonsuz keşif ve dijital vitrin platformu.</p>
-          </div>
-
-          <p className="mt-4">
-            Başvuru bilgileri yalnızca değerlendirme amacıyla kullanılır ve
-            üçüncü taraflarla paylaşılmaz.
-          </p>
+          <p>Komisyonsuz keşif rehberi. Microvend üzerinden satış yapılmaz.</p>
         </div>
       </div>
     </footer>

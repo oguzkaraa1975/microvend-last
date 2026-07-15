@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import { categories, sellers } from "../../data/mockData";
@@ -21,9 +21,13 @@ const alanSinifi =
 
 type DirectoryResultsProps = {
   lockedCategoryId?: string;
+  autoFocusSearch?: boolean;
 };
 
-function DirectoryResults({ lockedCategoryId }: DirectoryResultsProps) {
+function DirectoryResults({
+  lockedCategoryId,
+  autoFocusSearch,
+}: DirectoryResultsProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Bütün filtre durumu URL'de yaşar; geçersiz değerler güvenli
@@ -82,6 +86,13 @@ function DirectoryResults({ lockedCategoryId }: DirectoryResultsProps) {
   };
 
   const aramaFormu = useRef<HTMLFormElement>(null);
+  const aramaInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocusSearch) {
+      aramaInput.current?.focus();
+    }
+  }, [autoFocusSearch]);
 
   const filtreleriTemizle = () => {
     aramaFormu.current?.reset();
@@ -164,6 +175,7 @@ function DirectoryResults({ lockedCategoryId }: DirectoryResultsProps) {
 
           <input
             key={qParam}
+            ref={aramaInput}
             id="kesfet-arama"
             name="q"
             type="text"

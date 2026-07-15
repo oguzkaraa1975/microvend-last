@@ -1,8 +1,12 @@
+import { useSearchParams } from "react-router-dom";
 import DirectoryResults from "../components/directory/DirectoryResults";
 import usePageTitle from "../hooks/usePageTitle";
 
 function DiscoverPage() {
   usePageTitle("Keşfet | Microvend");
+
+  const [searchParams] = useSearchParams();
+  const odakAra = searchParams.get("odak") === "ara";
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16 md:py-24">
@@ -21,7 +25,7 @@ function DiscoverPage() {
         </p>
       </div>
 
-      <DirectoryResults />
+      <DirectoryResults autoFocusSearch={odakAra} />
     </div>
   );
 }

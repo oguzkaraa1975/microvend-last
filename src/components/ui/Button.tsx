@@ -2,10 +2,12 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonSize = "sm" | "md";
 
 type ButtonProps = {
   children: ReactNode;
   variant?: ButtonVariant;
+  size?: ButtonSize;
   to?: string;
   href?: string;
   target?: string;
@@ -17,7 +19,12 @@ type ButtonProps = {
 };
 
 const baseClasses =
-  "inline-flex items-center justify-center gap-2 rounded-sm px-5 py-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 rounded-sm text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60";
+
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: "px-4 py-2",
+  md: "px-5 py-3",
+};
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-brand text-paper hover:bg-brand-dark",
@@ -28,6 +35,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 function Button({
   children,
   variant = "primary",
+  size = "md",
   to,
   href,
   target,
@@ -37,7 +45,8 @@ function Button({
   disabled,
   className = "",
 }: ButtonProps) {
-  const classes = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();
+  const classes =
+    `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`.trim();
 
   if (to) {
     return (

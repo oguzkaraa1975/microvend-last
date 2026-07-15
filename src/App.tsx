@@ -11,6 +11,8 @@ import DiscoverPage from "./pages/DiscoverPage";
 import CollectionsPage from "./pages/CollectionsPage";
 import CollectionDetailPage from "./pages/CollectionDetailPage";
 import ContactPage from "./pages/ContactPage";
+import AuthPlaceholderPage from "./pages/AuthPlaceholderPage";
+import LegalDraftPage from "./pages/LegalDraftPage";
 import RedirectWithQuery from "./components/RedirectWithQuery";
 import SellerDetailPage from "./pages/SellerDetailPage";
 import PricingPage from "./pages/PricingPage";
@@ -34,6 +36,30 @@ function App() {
             <Route path="/seckiler" element={<CollectionsPage />} />
             <Route path="/seckiler/:slug" element={<CollectionDetailPage />} />
             <Route path="/iletisim" element={<ContactPage />} />
+            <Route
+              path="/giris"
+              element={<AuthPlaceholderPage variant="giris" />}
+            />
+            <Route
+              path="/uye-ol"
+              element={<AuthPlaceholderPage variant="uye-ol" />}
+            />
+            <Route
+              path="/sifre-sifirlama"
+              element={<AuthPlaceholderPage variant="sifre-sifirlama" />}
+            />
+            <Route
+              path="/favoriler"
+              element={<AuthPlaceholderPage variant="favoriler" />}
+            />
+            <Route
+              path="/gizlilik"
+              element={<LegalDraftPage variant="gizlilik" />}
+            />
+            <Route
+              path="/kullanim-kosullari"
+              element={<LegalDraftPage variant="kullanim-kosullari" />}
+            />
             <Route
               path="/saticilar"
               element={<RedirectWithQuery to="/kesfet" />}
