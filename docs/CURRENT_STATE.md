@@ -1,20 +1,28 @@
 # Microvend — Güncel Durum
 
 ## Proje durumu
-Editoryal rehber pivotu uygulanıyor (bkz. CLAUDE.md). Aşamalar A0→A7, GM plan turu ve A8 (GM gelir modeli dilimi + genel görsel/terminoloji cila süpürmesi) tamamen tamamlandı, commit edildi ve push edildi. Onaylı planlar: `C:\Users\oguz\.claude\plans\text-microvend-logical-tarjan.md` (A0–A11), `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (GM gelir modeli). Sıradaki aşama: **A9**.
+Editoryal rehber pivotu uygulanıyor (bkz. CLAUDE.md). Aşamalar A0→A7, GM plan turu, A8 (GM gelir modeli dilimi + genel görsel/terminoloji cila süpürmesi) ve A9 (Supabase başvuruları) tamamen tamamlandı, commit edildi ve push edildi. Onaylı planlar: `C:\Users\oguz\.claude\plans\text-microvend-logical-tarjan.md` (A0–A11), `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (GM gelir modeli). Sıradaki aşama: **A10 — kullanıcı auth ve favoriler**.
 
-## Son tamamlanan iş: A8 kapanışı — genel cila süpürmesi
-Gelir modeli dilimi ve genel cila turu push edildi. `ApplyPage`, `AboutPage`, `NotFoundPage`, `CategoriesPage`, `SellerDetailPage` (aksiyon şeridi dışındaki bölümler) tasarım sistemine (`bg-paper`/`text-ink`/`text-muted`/`text-clay`, `font-display`, `rounded-sm`/`rounded-md`, `Button` bileşeni) geçirildi. Eski görünür "Satıcı" terminolojisi kullanıcıya görünen tüm metinlerden temizlendi (veri katmanındaki `satici` değişken adı ve dondurulmuş `/saticilar/:slug` URL'si kasıtlı olarak korundu). Eski mavi hex'ler, `rounded-[2rem]`/`rounded-[2.5rem]` gibi büyük radiuslar ve `.card-soft` sıfıra indi; `.card-soft` tanımı `index.css`'ten silindi.
+## Son tamamlanan iş: A9 — Supabase başvuruları
+Supabase projesi kuruldu, `applications` migration'ı (`supabase/migrations/0001_applications.sql`) uygulandı. `/basvuru` artık gerçek insert yapıyor; kayıtlar `pending` statüsüyle oluşuyor. Entegrasyon testleriyle doğrulandı:
+- Anon SELECT erişimi reddedildi (HTTP 401, `42501 permission denied`).
+- CHECK sınırını aşan geçersiz insert reddedildi (`23514 check constraint violation`).
+- Honeypot dolu gönderimde Supabase'e hiç istek gitmedi, kayıt oluşmadı.
+- `.env` Git tarafından izlenmiyor (`.gitignore`'da, yalnızca `.env.example` istisna).
+
+**Açık kalan üretim kapısı:** Turnstile + sunucu tarafı rate-limit eklenmeden anonim başvuru formu genel üretime açılmaz (honeypot tek başına yeterli değil).
 
 ## Değiştirilen temel dosyalar
-- `src/pages/ApplyPage.tsx`, `src/pages/AboutPage.tsx`, `src/pages/NotFoundPage.tsx`, `src/pages/CategoriesPage.tsx`, `src/pages/SellerDetailPage.tsx`
-- `src/index.css` (`.card-soft` silindi)
+- `src/pages/ApplyPage.tsx` (gerçek insert + honeypot)
+- `src/lib/supabase.ts` (istemci, env eksikse `null`)
+- `supabase/migrations/0001_applications.sql`
+- `.gitignore`, `.env.example`, `CLAUDE.md`, bu dosya
 
 ## Doğrulanan testler
-`tsc --noEmit`, `eslint .`, `npm run build`, `git diff --check` temiz. Grep: eski hex'ler/`rounded-[2*`/`card-soft`/görünür "satıcı" 0 sonuç. Tarayıcıda `/basvuru`, `/kategoriler`, `/saticilar/luna-atolye` 1280px ve 375px'de doğrulandı; mobilde hamburger menüye düzgün geçiyor, konsol temiz, A7 favori/paylaş aksiyonlarında regresyon yok.
+`tsc --noEmit`, `eslint .`, `npm run build`, `npm audit` (0 zafiyet), `git diff --check` temiz. Canlı Supabase projesine karşı: gerçek insert, anon SELECT reddi, CHECK ihlali reddi, honeypot no-op'u ve `.env` git-ignore durumu doğrulandı.
 
 ## Sıradaki görev
-**A9 — Supabase başvuruları** (bkz. CLAUDE.md B.6): anon için yalnızca insert, sütun bazlı `GRANT INSERT`, `CHECK` kısıtları, sunucu kontrollü `status`, honeypot + genel pilottan önce Turnstile/Edge Function/rate-limit'ten biri.
+**A10 — Supabase auth + favoriler**: `/giris`, `/uye-ol`, `/favoriler` placeholder'larının gerçek sayfalarla değiştirilmesi; `favorites` tablosu ve RLS (bkz. CLAUDE.md B.6).
 
 ## Bilinen açık riskler
 - **Üretim kapısı (bağlayıcı):** Turnstile + sunucu tarafı rate-limit eklenmeden anonim başvuru formu genel üretime açılmaz (A9'daki honeypot tek başına yeterli değil).

@@ -1,6 +1,6 @@
 # CLAUDE.md — Microvend Project Guide
 
-Last updated: 2026-07-15 (A8 GM slice applied — pricing page + `planType` migration per the approved GM plan).
+Last updated: 2026-07-15 (A9 closed — Supabase `applications` table live, insert-only anon flow verified).
 
 This document has two parts:
 
@@ -45,17 +45,18 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 
 ---
 
-# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A8 GM slice)
+# PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-15, post-A9)
 
-Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn and the A8 GM slice (pricing page + `planType` migration) are done. Their outcomes are described below.
+Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn, A8 (GM slice + polish sweep), and A9 (Supabase applications) are done. Their outcomes are described below.
 
 ## A.1 Stack
 
 * React 19, TypeScript, Vite 8 (`8.0.16`), Tailwind CSS 4 (`@tailwindcss/vite`), react-router-dom 7. Icons: `lucide-react` + hand-rolled brand icons.
 * Package manager: **npm** (`package-lock.json`). Do not use pnpm.
 * SEC-1: `vite` at `8.0.16`, `@babel/core` at `7.29.7`; `npm audit` reports 0 vulnerabilities.
-* No backend. All data is mock, in `src/data/mockData.ts`.
-* The apply form simulates submission (no network call). This is development-only behavior — see release gates in B.7.
+* Sellers/categories/collections data is still mock, in `src/data/mockData.ts`. The apply form (A9) is the only real backend integration so far.
+* A9: `/basvuru` inserts into a real Supabase `applications` table (`supabase/migrations/0001_applications.sql`) via `src/lib/supabase.ts` (anon publishable key, `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY`, no client without both). RLS: anon has column-level INSERT only on data columns; `id`/`status`/`created_at` are server-controlled and not grantable. `status` defaults to `pending`. `CHECK` constraints enforce required fields, lengths, and allowed category slugs. A hidden honeypot field silently no-ops the insert and shows a fake success to bots. Verified live: anon SELECT rejected (401/`42501`), a CHECK-violating insert rejected (`23514`), honeypot submissions never reach Supabase, real submissions land as `pending` rows. `.env` (not `.env.example`) holds the two keys and is git-ignored.
+* **Production gate still open:** Turnstile + server-side rate-limiting are required before the anonymous apply form goes to general production (see B.7); honeypot alone is not sufficient.
 
 ## A.2 Implemented routes
 
@@ -129,10 +130,8 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 ## B.4 Target IA and stages (pending — route → stage that builds it)
 
-A1, A2, A3, A3.1, A4, A5, A6, A7, GM and the A8 GM slice are done — see Part A. The approved GM plan lives at `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (MVP = Free + Pro + Sponsorlu Vitrin only; paid badge product rejected; category sponsorship / search boost / first-100 campaign deferred as separate decisions). Remaining stages:
+A1, A2, A3, A3.1, A4, A5, A6, A7, GM, A8 (GM slice + polish sweep), and A9 (Supabase applications) are done — see Part A. The approved GM plan lives at `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (MVP = Free + Pro + Sponsorlu Vitrin only; paid badge product rejected; category sponsorship / search boost / first-100 campaign deferred as separate decisions). Remaining stages:
 
-* A8 (remaining sweep) — Copy/polish sweep, hard gate: old hexes, `rounded-[2*`, `.card-soft`, UI "satıcı" all reach zero (About, Apply, 404, `/kategoriler` copy, `SellerDetailPage` non-action sections). Pricing conversion already done in the GM slice.
-* A9 — Supabase applications (see B.6).
 * A10 — Supabase auth + favorites; placeholders replaced with real pages.
 * A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check, real contact address on `/iletisim`).
 
@@ -145,7 +144,7 @@ Header spec (A5, done — see A.3): Ücretlendirme is **not** in the header; it 
 
 ## B.6 Supabase plan (build each part only in its stage)
 
-Order: (1) **A9 applications** — insert-only for anon; column-level `GRANT INSERT (allowed columns…)` so `id`/`status`/`created_at`/admin columns are never grantable to anon; `CHECK` constraints for max lengths and allowed category slugs; `status` server-controlled (`DEFAULT 'pending'`); honeypot **plus**, before public pilot, one of Turnstile / Edge Function validation / rate-limit; (2) **A10 auth + favorites** — `favorites (user_id uuid references auth.users on delete cascade, seller_id text, created_at, primary key (user_id, seller_id))`, RLS `user_id = auth.uid()` for select/insert/delete; (3) sellers/categories/gallery data layer with mock fallback; (4) storage/admin — explicit request only.
+Order: (1) **A9 applications — done**, see Part A for the shipped shape; (2) **A10 auth + favorites** — `favorites (user_id uuid references auth.users on delete cascade, seller_id text, created_at, primary key (user_id, seller_id))`, RLS `user_id = auth.uid()` for select/insert/delete; (3) sellers/categories/gallery data layer with mock fallback; (4) storage/admin — explicit request only.
 
 * RLS from day one on every table.
 * `service_role` key never in frontend code, env vars shipped to the client, or the repo.
@@ -155,7 +154,7 @@ Order: (1) **A9 applications** — insert-only for anon; column-level `GRANT INS
 ## B.7 Release gates (binding)
 
 * **Technical preview:** allowed at any stage; membership CTAs may be hidden or shown as honest placeholders; never announce an interim design as the final version.
-* **Public pilot:** requires A9 **and** A10 complete. No CTA-hiding exemption. The simulated apply form must not be public.
+* **Public pilot:** requires A9 (done) **and** A10 complete. No CTA-hiding exemption.
 * **Anonim başvuru formu üretim kapısı (binding):** Turnstile + sunucu tarafı rate-limit eklenmeden anonim başvuru formu genel üretime açılmaz (honeypot tek başına yeterli değildir).
 * **Final launch:** full A11 checklist (fonts self-hosted, images localized/optimized with alt texts and broken-image check, SEO tasks done, all collections `sponsored: false`, `/iletisim` has a real contact address, legal drafts reviewed).
 * Legal pages (`/gizlilik`, `/kullanim-kosullari`) ship with a visible "Taslak" notice until data processing, Supabase, analytics, and cookie decisions are final.
