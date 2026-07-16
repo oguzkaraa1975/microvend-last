@@ -1,0 +1,6 @@
+[functions.submit-application]
+# JWT doğrulaması kapalı: bu uç anonim ziyaretçiler için genel amaçlı bir
+# başvuru formu, kullanıcı kimliği gerektirmiyor. Güvenlik JWT'ye değil
+# Turnstile doğrulamasına, sunucu tarafı alan/tip/uzunluk doğrulamasına ve
+# Postgres tabanlı rate-limit'e dayanır (bkz. supabase/functions/submit-application).
+verify_jwt = false

@@ -1,9 +1,17 @@
 # Microvend — Güncel Durum
 
 ## Proje durumu
-Editoryal rehber pivotu uygulanıyor (bkz. CLAUDE.md). Aşamalar A0→A10 tamamen tamamlandı; A10 canlı doğrulamadan geçti ve kapandı (2026-07-16). **A11 Slice 1 (fontlar + SEO metadata) uygulandı ama A11'in tamamı henüz kapanmadı** — aşağıda özet. Onaylı planlar: `text-microvend-logical-tarjan.md` (A0–A11), `microvend-i-in-gm-gelir-kind-sutherland.md` (GM), `microvend-de-a9-tamamland-ve-snappy-plum.md` (A10).
+Editoryal rehber pivotu uygulanıyor (bkz. CLAUDE.md). Aşamalar A0→A10 tamamen tamamlandı; A10 canlı doğrulamadan geçti ve kapandı (2026-07-16). **A11 Slice 1 (fontlar + SEO metadata) uygulandı; başvuru formu güvenlik sıkılaştırmasının kod tarafı da hazır ama canlıya alınmadı; A11'in tamamı henüz kapanmadı** — aşağıda özet. Onaylı planlar: `text-microvend-logical-tarjan.md` (A0–A11), `microvend-i-in-gm-gelir-kind-sutherland.md` (GM), `microvend-de-a9-tamamland-ve-snappy-plum.md` (A10).
 
-## Son iş: A11 Slice 1 — fontlar ve SEO metadata (devam ediyor, 2026-07-16)
+## Son iş: A11 — başvuru formu güvenlik sıkılaştırması (kod hazır, canlı değil, 2026-07-16)
+- `/basvuru` artık `applications` tablosuna doğrudan insert yapmıyor; `ApplyPage.tsx` yeni `supabase/functions/submit-application/index.ts` Edge Function'ını `supabase.functions.invoke` ile çağırıyor. Form görünümü, honeypot ve mevcut Türkçe doğrulama/mesajlar değişmedi; forma auth sayfalarındakiyle aynı `TurnstileWidget` (`action="submit_application"`) eklendi.
+- `supabase/migrations/0003_applications_revoke_anon.sql`: `applications_anon_insert` policy'si düşürüldü, `anon`+`authenticated`'dan tüm tablo yetkisi revoke edildi — tek yazma yolu artık Edge Function'ın service_role client'ı.
+- `supabase/migrations/0004_application_rate_limit.sql`: Postgres tabanlı, atomik IP-hash rate-limit. `private.application_rate_limit` tablosu (RLS açık, anon/authenticated'a hiç grant yok) + `public.check_application_rate_limit` SECURITY DEFINER RPC (`search_path=''`, yalnız `service_role`'e EXECUTE). Pencere/zaman tamamen Postgres `now()` ile hesaplanır, istemciden zaman kabul edilmez. Ham IP hiçbir yerde saklanmaz — Edge Function HMAC-SHA256(ip, `RATE_LIMIT_SALT`) ile hash'leyip yalnız hash'i gönderir.
+- Edge Function ayrıca: açık alan allowlist'i + tip/trim/uzunluk/kategori/e-posta doğrulaması (DB `CHECK` kısıtları son savunma katmanı olarak kalır), Turnstile `siteverify`'de `success` + `action==="submit_application"` + `remoteip` + izinli `hostname` kontrolü, `ALLOWED_ORIGINS` secret'ından CORS allowlist (güvenlik sınırı olarak kabul edilmez), yalnız POST/OPTIONS. `supabase/config.toml`'da `verify_jwt = false` açıkça tanımlandı. Service-role client, gelen isteğin `Authorization` header'ını asla almaz.
+- Kod kontrolleri temiz: `tsc --noEmit`, `eslint`, `npm run build`, `git diff --check`.
+- **Canlı değil / kapanmadı:** migration'lar (0003, 0004) henüz canlı projeye uygulanmadı; `TURNSTILE_SECRET_KEY` / `RATE_LIMIT_SALT` / `ALLOWED_ORIGINS` secret'ları henüz oluşturulmadı; fonksiyon deploy edilmedi; canlı test yapılmadı. CLAUDE.md B.7'deki üretim kapısı bu adımlar tamamlanana kadar kapalı kalır.
+
+## Önceki iş: A11 Slice 1 — fontlar ve SEO metadata (2026-07-16)
 - Fontlar self-host edildi: `public/fonts/` altında 6 WOFF2 dosyası (Newsreader 400 roman + italic, Manrope 400/500 — aynı variable dosya `font-weight: 400 500` ile iki ağırlığı da kapsıyor), her biri `latin` + `latin-ext` alt kümesiyle (Google'ın kendi `unicode-range` değerleri kullanılarak) Türkçe karakterler (ğ, ş, ı, İ, ç, ö, ü) doğru render ediliyor. `src/index.css`'e `@font-face` kuralları eklendi, `index.html`'den Google Fonts linkleri kaldırıldı. Lisans dosyaları `docs/licenses/` altında. Yeni npm bağımlılığı yok.
 - `usePageTitle` artık opsiyonel ikinci parametre olarak açıklama alıyor, `<meta name="description">` rotaya göre güncelleniyor (tek `useEffect`, `[title, description]` bağımlılığı). 17 sayfanın hepsine gerçek açıklama eklendi.
 - `public/robots.txt` eklendi (Sitemap satırı yok — gerçek domain gelene kadar ertelendi). `docs/SEO_ROUTES.md` eklendi: statik+dinamik rota envanteri, ileride sitemap için hazır.
@@ -27,10 +35,12 @@ Canlı Auth/favoriler testleri (iki Dashboard'da Auto Confirm ile oluşturulan t
 
 ## Bilinen açık riskler
 - **A11 açık kalanlar:** Üretim domaini yok → `<link rel="canonical">` ve `sitemap.xml` eklenemedi. `/iletisim` için gerçek iletişim bilgisi yok → sayfa mevcut dürüst "yakında" metniyle değişmeden bırakıldı. Görsel yerelleştirme/optimizasyon henüz yapılmadı (Unsplash placeholder'lar duruyor).
-- **Üretim kapıları (bağlayıcı, A10 kapanışından bağımsız):** Anonim başvuru formu için Turnstile + sunucu tarafı rate-limit (A9'dan beri açık). Auth uçları için public pilot öncesi özel SMTP + Auth CAPTCHA (Turnstile) — bkz. `docs/SUPABASE_AUTH.md`.
+- **Üretim kapıları (bağlayıcı, A10 kapanışından bağımsız):** Anonim başvuru formu için Turnstile + sunucu tarafı rate-limit — **kod tarafı hazır** (Edge Function + migration'lar, bkz. yukarıdaki "Son iş"), ama canlı migration/secret/deploy/test yapılmadığı için kapı hâlâ kapalı. Auth uçları için public pilot öncesi özel SMTP + Auth CAPTCHA (Turnstile) — bkz. `docs/SUPABASE_AUTH.md`.
 - Free/Pro kota-deneme-istatistik mantığı hâlâ yalnız ürün açıklaması; işletme hesabı/panel yok.
 - Sponsorlu Vitrin fiyatı trafik verisi oluşana kadar açıklanmayacak.
 - Ekran görüntüsü aracı bu ortamda tutarlı çalışmıyor; görsel doğrulamalar DOM ölçümü/erişilebilirlik ağacı ile yapıldı.
 
 ## Sıradaki görev
+**Başvuru güvenlik kapısını canlıya almak:** `0003`/`0004` migration'larını canlı projeye uygula, `TURNSTILE_SECRET_KEY`/`RATE_LIMIT_SALT`/`ALLOWED_ORIGINS` secret'larını oluştur, `submit-application`'ı deploy et, canlı test et (bkz. yukarıdaki "Son iş" ve CLAUDE.md A.7/B.7).
+
 **A11'in kalanı:** görsel yerelleştirme/optimizasyon, `<link rel="canonical">` + `sitemap.xml` (üretim domaini gerekiyor), `/iletisim`'e gerçek iletişim bilgisi, işletme/seçki detay sayfaları için OG etiketleri. (Fontlar ve rota bazlı SEO metadata Slice 1'de tamamlandı — yukarıya bkz.) Public pilot öncesi ayrıca özel SMTP + Auth CAPTCHA (Turnstile) yapılandırması gerekiyor (A10'dan bağımsız, bkz. B.7).

@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { categories } from "../data/mockData";
 import Button from "../components/ui/Button";
 import FormField from "../components/ui/FormField";
 import FormMessage from "../components/ui/FormMessage";
+import TurnstileWidget from "../components/auth/TurnstileWidget";
+import type { TurnstileWidgetHandle } from "../components/auth/TurnstileWidget";
 import { supabase } from "../lib/supabase";
+import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
 import usePageTitle from "../hooks/usePageTitle";
 
 type BasvuruFormu = {
@@ -45,6 +49,8 @@ function ApplyPage() {
   const [hataMesaji, setHataMesaji] = useState("");
   const [basariMesaji, setBasariMesaji] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   const mesajRef = useRef<HTMLDivElement | null>(null);
 
@@ -128,21 +134,40 @@ function ApplyPage() {
       return;
     }
 
-    const { error } = await supabase.from("applications").insert({
-      full_name: form.adSoyad.trim(),
-      brand_name: form.markaAdi.trim(),
-      category_slug: form.kategori,
-      city: form.sehir.trim(),
-      email: form.email.trim(),
-      phone: form.telefon.trim() || null,
-      instagram: form.instagram.trim() || null,
-      website: form.website.trim() || null,
-      description: form.aciklama.trim(),
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setHataMesaji("Lütfen güvenlik doğrulamasını tamamla.");
+      setGonderiliyor(false);
+      return;
+    }
+
+    const { error } = await supabase.functions.invoke("submit-application", {
+      body: {
+        fullName: form.adSoyad.trim(),
+        brandName: form.markaAdi.trim(),
+        categorySlug: form.kategori,
+        city: form.sehir.trim(),
+        email: form.email.trim(),
+        phone: form.telefon.trim() || null,
+        instagram: form.instagram.trim() || null,
+        website: form.website.trim() || null,
+        description: form.aciklama.trim(),
+        turnstileToken: captchaToken,
+      },
     });
 
+    turnstileRef.current?.reset();
+    setCaptchaToken("");
+
     if (error) {
+      const durum =
+        error instanceof FunctionsHttpError
+          ? (error.context as Response).status
+          : undefined;
+
       setHataMesaji(
-        "Başvuru gönderilirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin."
+        durum === 429
+          ? "Çok fazla deneme yaptınız. Lütfen daha sonra tekrar deneyin."
+          : "Başvuru gönderilirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin."
       );
       setGonderiliyor(false);
       return;
@@ -300,6 +325,12 @@ function ApplyPage() {
               className="w-full rounded-sm border border-ink/20 px-4 py-4 outline-none transition focus:border-brand"
             />
           </div>
+
+          <TurnstileWidget
+            ref={turnstileRef}
+            action="submit_application"
+            onToken={setCaptchaToken}
+          />
 
           {basariMesaji && (
             <FormMessage ref={mesajRef} tone="info">

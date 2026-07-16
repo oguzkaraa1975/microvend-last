@@ -4,6 +4,7 @@ import { TURNSTILE_SITE_KEY } from "../../lib/turnstile";
 
 type RenderOptions = {
   sitekey: string;
+  action?: string;
   callback: (token: string) => void;
   "error-callback"?: () => void;
   "expired-callback"?: () => void;
@@ -50,12 +51,13 @@ export type TurnstileWidgetHandle = {
 
 type TurnstileWidgetProps = {
   onToken: (token: string) => void;
+  action?: string;
 };
 
 // captchaToken yokken form gönderimi engellenir; sayfalar bunu bu widget'ın
 // varlığına (TURNSTILE_SITE_KEY tanımlı mı) bakarak kontrol eder.
 const TurnstileWidget = forwardRef<TurnstileWidgetHandle, TurnstileWidgetProps>(
-  function TurnstileWidget({ onToken }, ref) {
+  function TurnstileWidget({ onToken, action }, ref) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const widgetIdRef = useRef<string | undefined>(undefined);
     const [durum, setDurum] = useState<"yukleniyor" | "hazir" | "hata">(
@@ -87,6 +89,7 @@ const TurnstileWidget = forwardRef<TurnstileWidgetHandle, TurnstileWidgetProps>(
 
           widgetIdRef.current = window.turnstile.render(containerRef.current, {
             sitekey: siteKey,
+            action,
             callback: (token) => {
               setDurum("hazir");
               onToken(token);
@@ -112,7 +115,7 @@ const TurnstileWidget = forwardRef<TurnstileWidgetHandle, TurnstileWidgetProps>(
           window.turnstile.remove(widgetIdRef.current);
         }
       };
-    }, [onToken]);
+    }, [onToken, action]);
 
     if (!TURNSTILE_SITE_KEY) {
       return null;
