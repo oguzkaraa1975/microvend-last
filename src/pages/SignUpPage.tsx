@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/ui/Button";
 import AuthShell from "../components/auth/AuthShell";
 import FormField from "../components/ui/FormField";
 import FormMessage from "../components/ui/FormMessage";
+import TurnstileWidget from "../components/auth/TurnstileWidget";
+import type { TurnstileWidgetHandle } from "../components/auth/TurnstileWidget";
 import { supabase } from "../lib/supabase";
+import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
 import { useAuth } from "../auth/AuthContext";
 import usePageTitle from "../hooks/usePageTitle";
 
@@ -25,6 +28,8 @@ function SignUpPage() {
   const [hataMesaji, setHataMesaji] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
   const [kayitAlindi, setKayitAlindi] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,6 +56,11 @@ function SignUpPage() {
       return;
     }
 
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setHataMesaji("Lütfen güvenlik doğrulamasını tamamla.");
+      return;
+    }
+
     setGonderiliyor(true);
     setHataMesaji("");
 
@@ -59,8 +69,12 @@ function SignUpPage() {
       password: sifre,
       options: {
         emailRedirectTo: `${window.location.origin}/giris?dogrulandi=1`,
+        captchaToken: captchaToken || undefined,
       },
     });
+
+    turnstileRef.current?.reset();
+    setCaptchaToken("");
 
     if (error) {
       // Adresin kayıtlı olup olmadığını açığa çıkarmayan genel mesajlar.
@@ -160,6 +174,8 @@ function SignUpPage() {
           }}
           hint="En az 8 karakter."
         />
+
+        <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
 
         {hataMesaji && <FormMessage tone="error">{hataMesaji}</FormMessage>}
 

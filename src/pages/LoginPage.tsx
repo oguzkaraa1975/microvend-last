@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../components/ui/Button";
 import AuthShell from "../components/auth/AuthShell";
 import FormField from "../components/ui/FormField";
 import FormMessage from "../components/ui/FormMessage";
+import TurnstileWidget from "../components/auth/TurnstileWidget";
+import type { TurnstileWidgetHandle } from "../components/auth/TurnstileWidget";
 import { supabase } from "../lib/supabase";
+import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
 import { useAuth } from "../auth/AuthContext";
 import usePageTitle from "../hooks/usePageTitle";
 
@@ -32,6 +35,8 @@ function LoginPage() {
   const [sifre, setSifre] = useState("");
   const [hataMesaji, setHataMesaji] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   const donusYolu = guvenliDonusYolu(
     (location.state as { from?: unknown } | null)?.from
@@ -60,13 +65,22 @@ function LoginPage() {
       return;
     }
 
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setHataMesaji("Lütfen güvenlik doğrulamasını tamamla.");
+      return;
+    }
+
     setGonderiliyor(true);
     setHataMesaji("");
 
     const { error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password: sifre,
+      options: { captchaToken: captchaToken || undefined },
     });
+
+    turnstileRef.current?.reset();
+    setCaptchaToken("");
 
     if (error) {
       if (error.code === "email_not_confirmed") {
@@ -155,6 +169,8 @@ function LoginPage() {
             setHataMesaji("");
           }}
         />
+
+        <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
 
         {hataMesaji && <FormMessage tone="error">{hataMesaji}</FormMessage>}
 

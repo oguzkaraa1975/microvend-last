@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../components/ui/Button";
 import AuthShell from "../components/auth/AuthShell";
 import FormField from "../components/ui/FormField";
 import FormMessage from "../components/ui/FormMessage";
+import TurnstileWidget from "../components/auth/TurnstileWidget";
+import type { TurnstileWidgetHandle } from "../components/auth/TurnstileWidget";
 import { supabase } from "../lib/supabase";
+import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
 import { useAuth } from "../auth/AuthContext";
 import usePageTitle from "../hooks/usePageTitle";
 
@@ -31,6 +34,8 @@ function PasswordResetPage() {
   const [hataMesaji, setHataMesaji] = useState("");
   const [bilgiMesaji, setBilgiMesaji] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   async function baglantiIste(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -47,13 +52,22 @@ function PasswordResetPage() {
       return;
     }
 
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setHataMesaji("Lütfen güvenlik doğrulamasını tamamla.");
+      return;
+    }
+
     setGonderiliyor(true);
     setHataMesaji("");
     setBilgiMesaji("");
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/sifre-sifirlama?mode=update`,
+      captchaToken: captchaToken || undefined,
     });
+
+    turnstileRef.current?.reset();
+    setCaptchaToken("");
 
     if (error) {
       setHataMesaji(
@@ -187,6 +201,8 @@ function PasswordResetPage() {
           }}
           placeholder="ornek@mail.com"
         />
+
+        <TurnstileWidget ref={turnstileRef} onToken={setCaptchaToken} />
 
         {hataMesaji && <FormMessage tone="error">{hataMesaji}</FormMessage>}
 

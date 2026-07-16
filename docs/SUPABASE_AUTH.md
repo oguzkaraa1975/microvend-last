@@ -1,8 +1,10 @@
-# Supabase Auth — Manuel Yapılandırma (A10)
+# Supabase Auth — Manuel Yapılandırma (A10 + pilot güvenlik kapıları)
 
 Kod tarafı `src/auth/` + `supabase/migrations/0002_favorites.sql` ile gelir; aşağıdaki
-adımlar Supabase panelinden **elle** yapılır. Yeni env değişkeni yoktur — mevcut
-`VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` yeterlidir.
+adımlar Supabase panelinden **elle** yapılır. A10 için yeni env değişkeni yoktur —
+mevcut `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` yeterlidir. Pilot
+güvenlik kapıları (SMTP + Turnstile) için `VITE_TURNSTILE_SITE_KEY` eklendi, bkz.
+bölüm 4.
 
 ## 1. Migration
 
@@ -33,9 +35,37 @@ Kodun kullandığı dönüş adresleri (bilgi için):
 
 ## 4. Public pilot öncesi zorunlu (bağlayıcı, bkz. CLAUDE.md B.7)
 
-- **Özel SMTP:** Supabase'in yerleşik SMTP'si saatte birkaç e-postayla sınırlıdır ve
-  üretim için değildir. Pilot açılmadan önce özel SMTP (ör. Resend/Postmark) bağlanmalı.
-- **Auth CAPTCHA (Turnstile):** Authentication → Attack Protection altından Turnstile
-  etkinleştirilmeli (üye ol / giriş / şifre sıfırlama uçları için). Anonim başvuru
-  formunun Turnstile + sunucu tarafı rate-limit kapısı da ayrıca açık durumda.
+**Durum: kod tarafı hazır, panel kurulumu ve canlı test henüz yapılmadı — bu kapı
+kapanmış sayılmaz.**
+
+- **Özel SMTP (Resend) — bloklu, üretim domaini bekleniyor:** Supabase'in yerleşik
+  SMTP'si saatte birkaç e-postayla sınırlıdır ve üretim için değildir. Sağlayıcı
+  olarak Resend kararlaştırıldı, ancak Resend'de gönderen domain doğrulaması
+  (SPF/DKIM/DMARC) gerçek bir domain gerektirir; Microvend'in henüz bir üretim
+  domaini yok. Bu yüzden Resend hesabı/domain kurulumu **şimdilik yapılmıyor** —
+  sahte veya geçici domain/gönderen adresi eklenmeyecek. Domain netleşince:
+  Resend'de domain doğrula → Authentication → Settings → SMTP Settings'e bağla.
+  Kod tarafında hiçbir değişiklik gerekmez.
+- **Auth CAPTCHA (Turnstile) — kod tarafı uygulandı:** `src/components/auth/TurnstileWidget.tsx`
+  (npm paketi yok, Cloudflare'in `api.js` script'i runtime'da yüklenir) `LoginPage`,
+  `SignUpPage` ve `PasswordResetPage`'in bağlantı isteği formunda (`baglantiIste`,
+  şifre güncelleme formu değil) render edilir; `VITE_TURNSTILE_SITE_KEY` env
+  değişkeni tanımlıysa widget görünür ve `captchaToken` olmadan gönderim
+  engellenir, tanımlı değilse widget hiç render edilmez ve formlar captcha
+  istemeden çalışmaya devam eder (mevcut davranış korunur). Panelde
+  **Authentication → Attack Protection → Turnstile henüz açılmadı** — açılana ve
+  site+secret key panelde girilene kadar bu kapı kapanmaz. Anonim başvuru formunun
+  Turnstile + sunucu tarafı rate-limit kapısı (Edge Function gerektirir) ayrı bir
+  sonraki turda ele alınacak, henüz açık.
 - Auth uçlarındaki oran sınırlama şimdilik GoTrue yerleşik varsayılanlarıdır.
+
+### Panelde yapılacaklar (kullanıcı tarafı, kod bunları değiştirmez)
+
+1. **Bloklu — üretim domaini netleşince:** Resend'de domaini doğrula (SPF/DKIM/DMARC)
+   → Supabase Authentication → Settings → SMTP Settings'e bağla.
+2. Cloudflare Turnstile'da site oluştur, site key + secret key al.
+3. Supabase Authentication → Attack Protection → Turnstile'ı aç, secret key'i gir.
+4. `.env`'e `VITE_TURNSTILE_SITE_KEY` olarak site key'i ekle (secret key asla
+   frontend'e veya repoya girmez).
+5. Giriş / üye ol / şifre sıfırlama uçlarını canlıda test et, bu bölümdeki durumu
+   güncelle.
