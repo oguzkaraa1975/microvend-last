@@ -9,6 +9,8 @@ type ButtonProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   to?: string;
+  /** to ile birlikte react-router Link state'i (örn. giriş sonrası dönüş yolu). */
+  state?: unknown;
   href?: string;
   target?: string;
   rel?: string;
@@ -39,6 +41,7 @@ function Button({
   variant = "primary",
   size = "md",
   to,
+  state,
   href,
   target,
   rel,
@@ -52,7 +55,7 @@ function Button({
 
   if (to) {
     return (
-      <Link to={to} className={classes} onClick={onClick}>
+      <Link to={to} state={state} className={classes} onClick={onClick}>
         {children}
       </Link>
     );

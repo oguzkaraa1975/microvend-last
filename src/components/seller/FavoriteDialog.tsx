@@ -5,9 +5,11 @@ import Button from "../ui/Button";
 type FavoriteDialogProps = {
   open: boolean;
   onClose: () => void;
+  /** Giriş/üyelik sonrası dönülecek uygulama içi path (örn. işletme profili). */
+  from: string;
 };
 
-function FavoriteDialog({ open, onClose }: FavoriteDialogProps) {
+function FavoriteDialog({ open, onClose, from }: FavoriteDialogProps) {
   const actionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,10 +63,16 @@ function FavoriteDialog({ open, onClose }: FavoriteDialogProps) {
         </p>
 
         <div ref={actionsRef} className="flex flex-col gap-3 sm:flex-row">
-          <Button to="/uye-ol" onClick={onClose} className="flex-1">
+          <Button to="/uye-ol" state={{ from }} onClick={onClose} className="flex-1">
             Ücretsiz Üye Ol
           </Button>
-          <Button to="/giris" variant="secondary" onClick={onClose} className="flex-1">
+          <Button
+            to="/giris"
+            state={{ from }}
+            variant="secondary"
+            onClick={onClose}
+            className="flex-1"
+          >
             Giriş Yap
           </Button>
         </div>

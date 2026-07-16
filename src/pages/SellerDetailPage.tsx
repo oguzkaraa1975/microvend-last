@@ -6,6 +6,8 @@ import Button from "../components/ui/Button";
 import FavoriteDialog from "../components/seller/FavoriteDialog";
 import { sellers, type Seller } from "../data/mockData";
 import usePageTitle from "../hooks/usePageTitle";
+import { useAuth } from "../auth/AuthContext";
+import { useFavorite } from "../hooks/useFavorite";
 
 type PrimaryAction = { label: string; href: string } | null;
 
@@ -36,6 +38,9 @@ function SellerDetailPage() {
     satici ? `${satici.name} | Microvend` : "İşletme bulunamadı | Microvend"
   );
 
+  const { user, loading: authLoading } = useAuth();
+  const favori = useFavorite(satici?.id ?? "");
+
   const [isFavoriteDialogOpen, setFavoriteDialogOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState<ShareStatus>("idle");
   const favoriteTriggerWrapperRef = useRef<HTMLDivElement>(null);
@@ -48,6 +53,16 @@ function SellerDetailPage() {
   function closeFavoriteDialog() {
     setFavoriteDialogOpen(false);
     favoriteTriggerWrapperRef.current?.querySelector("button")?.focus();
+  }
+
+  // Girişsizken üyelik daveti (dialog); girişliyken hedef duruma getirme.
+  function handleFavoriteClick() {
+    if (!user) {
+      setFavoriteDialogOpen(true);
+      return;
+    }
+
+    void favori.setFavorite(!favori.isFavorite);
   }
 
   async function handleShare() {
@@ -153,11 +168,22 @@ function SellerDetailPage() {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => setFavoriteDialogOpen(true)}
+            onClick={handleFavoriteClick}
+            disabled={authLoading || favori.loading || favori.saving}
             className="w-full sm:w-auto"
           >
-            <Heart size={16} aria-hidden="true" />
-            Favorilere Ekle
+            <Heart
+              size={16}
+              aria-hidden="true"
+              className={
+                user && favori.isFavorite ? "fill-clay text-clay" : undefined
+              }
+            />
+            <span aria-live="polite">
+              {user && favori.isFavorite
+                ? "Favorilerden Çıkar"
+                : "Favorilere Ekle"}
+            </span>
           </Button>
         </div>
 
@@ -178,7 +204,17 @@ function SellerDetailPage() {
         </Button>
       </div>
 
-      <FavoriteDialog open={isFavoriteDialogOpen} onClose={closeFavoriteDialog} />
+      {user && favori.error && (
+        <p role="alert" className="-mt-12 mb-16 text-center text-sm text-red-700">
+          {favori.error}
+        </p>
+      )}
+
+      <FavoriteDialog
+        open={isFavoriteDialogOpen}
+        onClose={closeFavoriteDialog}
+        from={`/saticilar/${satici.slug}`}
+      />
 
       <div className="mb-16 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded-md border border-ink/10 bg-white p-8 md:p-10">

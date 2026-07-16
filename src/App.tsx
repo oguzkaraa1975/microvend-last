@@ -11,7 +11,11 @@ import DiscoverPage from "./pages/DiscoverPage";
 import CollectionsPage from "./pages/CollectionsPage";
 import CollectionDetailPage from "./pages/CollectionDetailPage";
 import ContactPage from "./pages/ContactPage";
-import AuthPlaceholderPage from "./pages/AuthPlaceholderPage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import PasswordResetPage from "./pages/PasswordResetPage";
+import FavoritesPage from "./pages/FavoritesPage";
+import AuthProvider from "./auth/AuthProvider";
 import LegalDraftPage from "./pages/LegalDraftPage";
 import RedirectWithQuery from "./components/RedirectWithQuery";
 import SellerDetailPage from "./pages/SellerDetailPage";
@@ -23,57 +27,53 @@ import NotFoundPage from "./pages/NotFoundPage";
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <div className="min-h-screen bg-paper text-ink">
-        <Header />
+      <AuthProvider>
+        <ScrollToTop />
+        <div className="min-h-screen bg-paper text-ink">
+          <Header />
 
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/kesfet" element={<DiscoverPage />} />
-            <Route path="/kategoriler" element={<CategoriesPage />} />
-            <Route path="/kategoriler/:slug" element={<CategoryDetailPage />} />
-            <Route path="/seckiler" element={<CollectionsPage />} />
-            <Route path="/seckiler/:slug" element={<CollectionDetailPage />} />
-            <Route path="/iletisim" element={<ContactPage />} />
-            <Route
-              path="/giris"
-              element={<AuthPlaceholderPage variant="giris" />}
-            />
-            <Route
-              path="/uye-ol"
-              element={<AuthPlaceholderPage variant="uye-ol" />}
-            />
-            <Route
-              path="/sifre-sifirlama"
-              element={<AuthPlaceholderPage variant="sifre-sifirlama" />}
-            />
-            <Route
-              path="/favoriler"
-              element={<AuthPlaceholderPage variant="favoriler" />}
-            />
-            <Route
-              path="/gizlilik"
-              element={<LegalDraftPage variant="gizlilik" />}
-            />
-            <Route
-              path="/kullanim-kosullari"
-              element={<LegalDraftPage variant="kullanim-kosullari" />}
-            />
-            <Route
-              path="/saticilar"
-              element={<RedirectWithQuery to="/kesfet" />}
-            />
-            <Route path="/saticilar/:slug" element={<SellerDetailPage />} />
-            <Route path="/ucretlendirme" element={<PricingPage />} />
-            <Route path="/basvuru" element={<ApplyPage />} />
-            <Route path="/hakkimizda" element={<AboutPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </main>
+          <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/kesfet" element={<DiscoverPage />} />
+              <Route path="/kategoriler" element={<CategoriesPage />} />
+              <Route
+                path="/kategoriler/:slug"
+                element={<CategoryDetailPage />}
+              />
+              <Route path="/seckiler" element={<CollectionsPage />} />
+              <Route
+                path="/seckiler/:slug"
+                element={<CollectionDetailPage />}
+              />
+              <Route path="/iletisim" element={<ContactPage />} />
+              <Route path="/giris" element={<LoginPage />} />
+              <Route path="/uye-ol" element={<SignUpPage />} />
+              <Route path="/sifre-sifirlama" element={<PasswordResetPage />} />
+              <Route path="/favoriler" element={<FavoritesPage />} />
+              <Route
+                path="/gizlilik"
+                element={<LegalDraftPage variant="gizlilik" />}
+              />
+              <Route
+                path="/kullanim-kosullari"
+                element={<LegalDraftPage variant="kullanim-kosullari" />}
+              />
+              <Route
+                path="/saticilar"
+                element={<RedirectWithQuery to="/kesfet" />}
+              />
+              <Route path="/saticilar/:slug" element={<SellerDetailPage />} />
+              <Route path="/ucretlendirme" element={<PricingPage />} />
+              <Route path="/basvuru" element={<ApplyPage />} />
+              <Route path="/hakkimizda" element={<AboutPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </main>
 
-        <Footer />
-      </div>
+          <Footer />
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

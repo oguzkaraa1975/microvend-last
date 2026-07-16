@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, X } from "lucide-react";
+import { CircleUser, Menu, Search, X } from "lucide-react";
 import Button from "./ui/Button";
+import { useAuth } from "../auth/AuthContext";
 
 const navLinks = [
   { to: "/hakkimizda", label: "Hakkımızda" },
@@ -15,7 +16,13 @@ const navLinks = [
 const araLink = "/kesfet?odak=ara";
 
 function Header() {
+  const { user, loading: authLoading, signOut } = useAuth();
+
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hesapMenuAcik, setHesapMenuAcik] = useState(false);
+
+  const hesapMenuRef = useRef<HTMLDivElement>(null);
+  const hesapTetikRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!menuOpen) {
@@ -32,7 +39,40 @@ function Header() {
     return () => window.removeEventListener("keydown", kapat);
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!hesapMenuAcik) {
+      return;
+    }
+
+    const klavyeIleKapat = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setHesapMenuAcik(false);
+        hesapTetikRef.current?.focus();
+      }
+    };
+
+    const disTikIleKapat = (event: PointerEvent) => {
+      if (!hesapMenuRef.current?.contains(event.target as Node)) {
+        setHesapMenuAcik(false);
+      }
+    };
+
+    window.addEventListener("keydown", klavyeIleKapat);
+    document.addEventListener("pointerdown", disTikIleKapat);
+
+    return () => {
+      window.removeEventListener("keydown", klavyeIleKapat);
+      document.removeEventListener("pointerdown", disTikIleKapat);
+    };
+  }, [hesapMenuAcik]);
+
   const kapat = () => setMenuOpen(false);
+
+  async function cikisYap() {
+    setHesapMenuAcik(false);
+    setMenuOpen(false);
+    await signOut();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/90 backdrop-blur">
@@ -69,13 +109,57 @@ function Header() {
             <Search size={18} aria-hidden="true" />
           </Link>
 
-          <Button to="/giris" variant="secondary" size="sm">
-            Giriş Yap
-          </Button>
+          {/* authLoading sırasında girişsiz butonlar flash etmesin diye boş bırakılır. */}
+          {!authLoading && user && (
+            <div ref={hesapMenuRef} className="relative">
+              <button
+                type="button"
+                ref={hesapTetikRef}
+                onClick={() => setHesapMenuAcik((onceki) => !onceki)}
+                aria-expanded={hesapMenuAcik}
+                aria-controls="hesap-menu"
+                aria-label="Hesap menüsü"
+                className="inline-flex items-center rounded-sm border border-ink/15 p-2 text-ink transition-colors hover:border-ink/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                <CircleUser size={20} aria-hidden="true" />
+              </button>
 
-          <Button to="/uye-ol" variant="secondary" size="sm">
-            Üye Ol
-          </Button>
+              {hesapMenuAcik && (
+                <div
+                  id="hesap-menu"
+                  className="absolute right-0 top-full mt-2 w-48 rounded-sm border border-ink/10 bg-paper py-2 shadow-lg"
+                >
+                  <Link
+                    to="/favoriler"
+                    onClick={() => setHesapMenuAcik(false)}
+                    className="block px-4 py-2 text-sm text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand"
+                  >
+                    Favorilerim
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={cikisYap}
+                    className="block w-full px-4 py-2 text-left text-sm text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand"
+                  >
+                    Çıkış Yap
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {!authLoading && !user && (
+            <>
+              <Button to="/giris" variant="secondary" size="sm">
+                Giriş Yap
+              </Button>
+
+              <Button to="/uye-ol" variant="secondary" size="sm">
+                Üye Ol
+              </Button>
+            </>
+          )}
 
           <Button to="/basvuru" size="sm">
             İşletmeni Ekle
@@ -127,18 +211,42 @@ function Header() {
               Ara
             </Link>
 
-            <Link
-              to="/giris"
-              onClick={kapat}
-              className="rounded-sm py-2 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-            >
-              Giriş Yap
-            </Link>
+            {!authLoading && user && (
+              <>
+                <Link
+                  to="/favoriler"
+                  onClick={kapat}
+                  className="rounded-sm py-2 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  Favorilerim
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={cikisYap}
+                  className="rounded-sm py-2 text-left transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                >
+                  Çıkış Yap
+                </button>
+              </>
+            )}
+
+            {!authLoading && !user && (
+              <Link
+                to="/giris"
+                onClick={kapat}
+                className="rounded-sm py-2 transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              >
+                Giriş Yap
+              </Link>
+            )}
 
             <div className="mt-3 flex flex-col gap-3">
-              <Button to="/uye-ol" variant="secondary" onClick={kapat}>
-                Üye Ol
-              </Button>
+              {!authLoading && !user && (
+                <Button to="/uye-ol" variant="secondary" onClick={kapat}>
+                  Üye Ol
+                </Button>
+              )}
 
               <Button to="/basvuru" onClick={kapat}>
                 İşletmeni Ekle
