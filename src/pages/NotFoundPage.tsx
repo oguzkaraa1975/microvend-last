@@ -2,7 +2,10 @@ import Button from "../components/ui/Button";
 import usePageTitle from "../hooks/usePageTitle";
 
 function NotFoundPage() {
-  usePageTitle("Sayfa bulunamadı | Microvend");
+  usePageTitle(
+    "Sayfa bulunamadı | Microvend",
+    "Aradığınız sayfa bulunamadı."
+  );
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-24">

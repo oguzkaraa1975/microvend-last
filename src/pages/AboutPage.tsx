@@ -2,7 +2,10 @@ import Button from "../components/ui/Button";
 import usePageTitle from "../hooks/usePageTitle";
 
 function AboutPage() {
-  usePageTitle("Hakkımızda | Microvend");
+  usePageTitle(
+    "Hakkımızda | Microvend",
+    "Microvend'in misyonunu ve mikro işletmeler için erişilebilir görünürlük yaklaşımını öğren."
+  );
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-24">

@@ -35,7 +35,10 @@ const emailGecerliMi = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 function ApplyPage() {
-  usePageTitle("İşletme Başvurusu | Microvend");
+  usePageTitle(
+    "İşletme Başvurusu | Microvend",
+    "Mikro işletmeni Microvend rehberine eklemek için başvuru formunu doldur — temel profil ücretsizdir."
+  );
 
   const [form, setForm] = useState<BasvuruFormu>(bosForm);
   const [honeypot, setHoneypot] = useState("");

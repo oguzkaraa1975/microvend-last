@@ -1,6 +1,6 @@
 # CLAUDE.md — Microvend Project Guide
 
-Last updated: 2026-07-16 (A10 closed — Supabase Auth + favorites live-verified, see A.1).
+Last updated: 2026-07-16 (A11 Slice 1 applied — fonts self-hosted, per-route SEO metadata added, see A.6; A11 itself is not yet closed, see B.4).
 
 This document has two parts:
 
@@ -47,7 +47,7 @@ Visitors are routed to the business's own website, Instagram, WhatsApp, or sales
 
 # PART A — CURRENT IMPLEMENTED STATE (as of 2026-07-16, post-A10 close)
 
-Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn, A8 (GM slice + polish sweep), A9 (Supabase applications), and A10 (Supabase Auth + favorites) are done. Their outcomes are described below.
+Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn, A8 (GM slice + polish sweep), A9 (Supabase applications), and A10 (Supabase Auth + favorites) are done. A11 Slice 1 (fonts self-host + SEO metadata, see A.6) is also applied, but A11 itself is not yet closed — remaining A11 scope is tracked in B.4. Outcomes are described below.
 
 ## A.1 Stack
 
@@ -89,7 +89,7 @@ Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn, A8 (GM sli
 * `Seller { …, joinedAt: string (ISO), shippingScope: "local" | "regional" | "nationwide", planType: "free" | "pro", … }` (all prior fields kept; `planType` migrated from silver/gold/premium in the A8 GM slice — s1/s2/s3 are `pro` as Pro-only UI test data, the other 9 are `free`).
 * `Collection { id, slug, title, description, intro, coverImage, sellerIds[], sponsored, publishedAt }`, `FeaturedStory { sellerId, title, excerpt, quote?, image }`.
 * 12 sellers, 6 categories (new taxonomy: Seramik / Ev & Yaşam / Tekstil / Takı / Doğal Ürünler / Kırtasiye). The original 6 seller `id`/`slug` values are preserved.
-* 3 collections (one `sponsored: true` — dev/test only, must be `false` in production; see B.7) and one `featuredStory`.
+* 3 collections (all `sponsored: false` as of A11 Slice 1 — see A.6; the B.5/B.7 production requirement is now satisfied) and one `featuredStory`.
 * All images are Unsplash placeholders (localization is an A11 task).
 
 ## A.5 Visual state (transitional — intentional)
@@ -97,6 +97,16 @@ Stages A0, A1, SEC-1, A2, A3, A3.1, A4, A5, A6, A7, the GM plan turn, A8 (GM sli
 * Design tokens and fonts are live (see B.2): base is Manrope on paper `#F7F3EC` with ink text; the app shell uses `bg-paper text-ink`.
 * Converted to the new design system: primitives, directory (`/kesfet`, `/kategoriler/:slug`), collections, contact, header/footer, the real auth/favorites pages (A10), legal placeholders, the homepage, the pricing page and the profile action strip. Still carrying the old blue style: About, Apply, 404, the `/kategoriler` copy and the non-action sections of `SellerDetailPage`. This mixed look is deliberate: each pending stage converts only the files it touches, and the remaining A8 sweep is the hard gate where old hexes/radii/copy must reach zero.
 * `.card-soft` in `index.css` is **deprecated**: still consumed by old components, will be deleted in A8. Do not use it in new code.
+
+## A.6 A11 Slice 1 — fonts & SEO metadata (applied 2026-07-16; A11 itself not yet closed)
+
+* Fonts are self-hosted: `public/fonts/` holds 6 WOFF2 files — Newsreader 400 roman + 400 italic, Manrope 400/500 (one variable-range file per subset, `font-weight: 400 500`), each split into `latin` + `latin-ext` subsets (Google's own `unicode-range` values reused) so Turkish characters (ğ, ş, ı, İ, ç, ö, ü) render correctly alongside plain Latin. `src/index.css` declares the matching `@font-face` rules (`font-display: swap`); `index.html`'s Google Fonts `<link>`/`preconnect` tags are removed. SIL OFL license files are kept in `docs/licenses/`. No new npm dependency.
+* `usePageTitle` (`src/hooks/usePageTitle.ts`) takes an optional second `description` argument and updates `<meta name="description">` per route (single `useEffect`, `[title, description]` deps). All 17 pages that call it now pass a real per-page description.
+* `public/robots.txt` added (`Allow: /`, no `Sitemap:` line — deferred until a production domain exists). `docs/SEO_ROUTES.md` added: static + dynamic route inventory, ready as sitemap input once that domain exists.
+* All `collections[].sponsored` are now `false` (the `dogadan-gelenler` dev/test collection was flipped from `true`; its explanatory comment was removed as no longer applicable).
+* Verified: `tsc --noEmit`, `eslint`, `npm run build`, `git diff --check` all clean. Live dev-server checks: all 6 fonts load from `/fonts/*.woff2` (zero requests to `fonts.googleapis.com`/`fonts.gstatic.com`), `document.fonts.check()` confirms Turkish glyph coverage for all 4 faces, per-route `document.title`/meta description update correctly, `/saticilar?<query>` → `/kesfet?<query>` redirect preserves the query string, `/robots.txt` serves the expected content, `/seckiler` shows "Microvend Seçkisi" (no stray "Sponsorlu") on all three collections.
+* Image/alt/broken-image audit done, no code change needed: every image already goes through `SellerImage`, which already had a required `alt` prop and an `onError` fallback; no bare `<img>` exists elsewhere in `src/`.
+* **A11 remaining (open, tracked in B.4):** image localization/optimization (Unsplash placeholders still in use), `<link rel="canonical">` + `sitemap.xml` (need a real production domain), a real contact address on `/iletisim`, OG tags for business/collection detail pages.
 
 ---
 
@@ -119,7 +129,7 @@ Colors — use tokens only; **raw hexes are forbidden in new code** (validation/
 | muted | `#626A65` | stone gray, secondary text | `text-muted` |
 | clay | `#B85C42` | terracotta accent, eyebrows | `text-clay` |
 
-Typography: **Newsreader** (`font-display`) for large/editorial headings; **Manrope** (`font-sans`) for body, navigation, buttons. Loaded from Google Fonts for now; WOFF2 self-hosting is an A11 task.
+Typography: **Newsreader** (`font-display`) for large/editorial headings; **Manrope** (`font-sans`) for body, navigation, buttons. Self-hosted as of A11 Slice 1 (see A.6) — WOFF2 files in `public/fonts/`, no Google Fonts requests.
 
 Feel: editorial, calm, warm, trustworthy. Strong typographic hierarchy, thin divider lines (e.g. `border-ink/10`), **low border radii** (`rounded-sm`/`rounded-md` max), image-heavy business cards, functional whitespace, real producer/atelier photography direction.
 
@@ -135,7 +145,7 @@ Forbidden: generic blue SaaS look, oversized rounded cards (`rounded-[2rem]`), p
 
 A1, A2, A3, A3.1, A4, A5, A6, A7, GM, A8 (GM slice + polish sweep), A9 (Supabase applications), and A10 (Supabase auth + favorites) are done — see Part A. The approved GM plan lives at `C:\Users\oguz\.claude\plans\microvend-i-in-gm-gelir-kind-sutherland.md` (MVP = Free + Pro + Sponsorlu Vitrin only; paid badge product rejected; category sponsorship / search boost / first-100 campaign deferred as separate decisions). Remaining stages:
 
-* A11 — Final release prep (fonts self-host, image localization/optimization/alt/broken-check, SEO: per-route titles+meta, robots.txt, sitemap.xml, canonical, OG for business/collection pages, redirect check, real contact address on `/iletisim`).
+* A11 — Final release prep. **Slice 1 done** (fonts self-host, per-route meta description, `robots.txt`, route inventory doc, redirect check, all collections `sponsored: false` — see A.6). **Remaining:** image localization/optimization/broken-check (alt-text + fallback audit already passed, no code change needed there), `<link rel="canonical">` + `sitemap.xml` (blocked on a real production domain), real contact address on `/iletisim`, OG tags for business/collection pages.
 
 Header spec (A5, done — see A.3): Ücretlendirme is **not** in the header; it stays reachable via the footer / apply flow. The A10 account menu for logged-in users is built (see A.3).
 
@@ -158,7 +168,7 @@ Order: (1) **A9 applications — done**, see Part A for the shipped shape; (2) *
 * **Technical preview:** allowed at any stage; membership CTAs may be hidden or shown as honest placeholders; never announce an interim design as the final version.
 * **Public pilot:** requires A9 (done) **and** A10 (done, see A.1) **and** custom SMTP + Auth CAPTCHA (Turnstile) configured for the auth endpoints (see `docs/SUPABASE_AUTH.md`) — the SMTP/Turnstile condition is still open. No CTA-hiding exemption.
 * **Anonim başvuru formu üretim kapısı (binding):** Turnstile + sunucu tarafı rate-limit eklenmeden anonim başvuru formu genel üretime açılmaz (honeypot tek başına yeterli değildir).
-* **Final launch:** full A11 checklist (fonts self-hosted, images localized/optimized with alt texts and broken-image check, SEO tasks done, all collections `sponsored: false`, `/iletisim` has a real contact address, legal drafts reviewed).
+* **Final launch:** full A11 checklist — fonts self-hosted (done, see A.6), images localized/optimized with alt texts and broken-image check (alt/fallback audit passed; localization/optimization still open), SEO tasks (per-route meta done; canonical/sitemap open pending a production domain), all collections `sponsored: false` (done), `/iletisim` has a real contact address (open), legal drafts reviewed.
 * Legal pages (`/gizlilik`, `/kullanim-kosullari`) ship with a visible "Taslak" notice until data processing, Supabase, analytics, and cookie decisions are final.
 
 ---

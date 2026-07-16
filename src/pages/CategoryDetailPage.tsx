@@ -10,9 +10,10 @@ function CategoryDetailPage() {
   const kategori = categories.find((item) => item.slug === slug);
 
   usePageTitle(
+    kategori ? `${kategori.name} | Microvend` : "Kategori bulunamadı | Microvend",
     kategori
-      ? `${kategori.name} | Microvend`
-      : "Kategori bulunamadı | Microvend"
+      ? `${kategori.name} kategorisindeki bağımsız üreticileri ve mikro işletmeleri keşfet.`
+      : "Aradığınız kategori bulunamadı."
   );
 
   if (!kategori) {

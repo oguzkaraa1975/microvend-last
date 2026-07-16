@@ -11,7 +11,10 @@ function CollectionDetailPage() {
   const secki = collections.find((item) => item.slug === slug);
 
   usePageTitle(
-    secki ? `${secki.title} | Microvend` : "Seçki bulunamadı | Microvend"
+    secki ? `${secki.title} | Microvend` : "Seçki bulunamadı | Microvend",
+    secki
+      ? `${secki.title} seçkisindeki işletmeleri keşfet.`
+      : "Aradığınız seçki bulunamadı."
   );
 
   if (!secki) {

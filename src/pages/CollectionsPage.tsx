@@ -5,7 +5,10 @@ import { resolveCollectionSellers } from "../data/collections";
 import usePageTitle from "../hooks/usePageTitle";
 
 function CollectionsPage() {
-  usePageTitle("Seçkiler | Microvend");
+  usePageTitle(
+    "Seçkiler | Microvend",
+    "Editoryal seçkilerle bağımsız üreticileri ve mikro işletmeleri keşfetmenin yeni bir yolu — Microvend Seçkiler."
+  );
 
   const siraliSeckiler = [...collections].sort(
     (a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt)

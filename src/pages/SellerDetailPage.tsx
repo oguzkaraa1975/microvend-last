@@ -35,7 +35,10 @@ function SellerDetailPage() {
   const satici = sellers.find((item) => item.slug === slug);
 
   usePageTitle(
-    satici ? `${satici.name} | Microvend` : "İşletme bulunamadı | Microvend"
+    satici ? `${satici.name} | Microvend` : "İşletme bulunamadı | Microvend",
+    satici
+      ? `${satici.name} işletmesinin profilini incele; web sitesi, Instagram veya WhatsApp üzerinden iletişime geç.`
+      : "Aradığınız işletme bulunamadı."
   );
 
   const { user, loading: authLoading } = useAuth();

@@ -3,7 +3,10 @@ import { categories } from "../data/mockData";
 import usePageTitle from "../hooks/usePageTitle";
 
 function CategoriesPage() {
-  usePageTitle("Kategoriler | Microvend");
+  usePageTitle(
+    "Kategoriler | Microvend",
+    "Seramik, tekstil, takı ve daha fazlası — mikro işletmeleri kategoriye göre keşfetmek için tüm kategorileri incele."
+  );
 
   const gorunurKategoriler = categories.filter(
     (kategori) => kategori.sellerCount > 0

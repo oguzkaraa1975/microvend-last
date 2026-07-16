@@ -15,7 +15,10 @@ const emailGecerliMi = (email: string) =>
 // Recovery e-postasındaki bağlantı bu adrese döner; supabase-js token'ı işleyip
 // oturumu açar, form updateUser ile şifreyi değiştirir.
 function PasswordResetPage() {
-  usePageTitle("Şifre Sıfırlama | Microvend");
+  usePageTitle(
+    "Şifre Sıfırlama | Microvend",
+    "Microvend hesabının şifresini e-posta ile sıfırla."
+  );
 
   const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();

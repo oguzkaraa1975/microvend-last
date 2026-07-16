@@ -3,7 +3,10 @@ import DirectoryResults from "../components/directory/DirectoryResults";
 import usePageTitle from "../hooks/usePageTitle";
 
 function DiscoverPage() {
-  usePageTitle("Keşfet | Microvend");
+  usePageTitle(
+    "Keşfet | Microvend",
+    "Kategori, şehir, gönderim ve yeniliğe göre filtrele; bağımsız üreticileri ve mikro işletmeleri arama ile keşfet."
+  );
 
   const [searchParams] = useSearchParams();
   const odak = searchParams.get("odak");

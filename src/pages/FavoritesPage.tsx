@@ -17,7 +17,10 @@ type ListeSonucu = {
 };
 
 function FavoritesPage() {
-  usePageTitle("Favorilerim | Microvend");
+  usePageTitle(
+    "Favorilerim | Microvend",
+    "Favorilerine eklediğin mikro işletmeleri tek yerden gör ve yönet."
+  );
 
   const { user, loading: authLoading } = useAuth();
 

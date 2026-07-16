@@ -27,7 +27,10 @@ type LegalDraftPageProps = {
 function LegalDraftPage({ variant }: LegalDraftPageProps) {
   const { title, intro } = icerik[variant];
 
-  usePageTitle(`${title} (Taslak) | Microvend`);
+  usePageTitle(
+    `${title} (Taslak) | Microvend`,
+    `${title} taslağı — veri işleme kararları netleşene kadar güncellenmeye devam edecek.`
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">

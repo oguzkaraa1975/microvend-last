@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 
-function usePageTitle(title: string) {
+function usePageTitle(title: string, description?: string) {
   useEffect(() => {
     document.title = title;
-  }, [title]);
+    if (!description) return;
+    const meta = document.querySelector('meta[name="description"]');
+    meta?.setAttribute("content", description);
+  }, [title, description]);
 }
 
 export default usePageTitle;

@@ -687,11 +687,7 @@ export const collections: Collection[] = [
     coverImage:
       "https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=1600&q=80",
     sellerIds: ["s4", "s8", "s9"],
-    // GELİŞTİRME/TEST VERİSİ: "Sponsorlu" etiketinin render'ını test etmek için
-    // true bırakıldı. Gerçek bir sponsor YOKTUR — public pilot / production
-    // verisinde bu alan false yapılmalıdır (bkz. CLAUDE.md B.5 ve B.7).
-    // Sponsorlu içerik editoryal seçimden ayrıdır ve asla güven etiketi değildir.
-    sponsored: true,
+    sponsored: false,
     publishedAt: "2026-05-26",
   },
 ];

@@ -18,7 +18,10 @@ function guvenliDonusYolu(aday: unknown): string {
 }
 
 function LoginPage() {
-  usePageTitle("Giriş Yap | Microvend");
+  usePageTitle(
+    "Giriş Yap | Microvend",
+    "Microvend hesabına giriş yap; favori işletmelerine ve hesap ayarlarına eriş."
+  );
 
   const { user, loading: authLoading } = useAuth();
   const location = useLocation();

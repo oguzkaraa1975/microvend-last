@@ -2,7 +2,10 @@ import Button from "../components/ui/Button";
 import usePageTitle from "../hooks/usePageTitle";
 
 function ContactPage() {
-  usePageTitle("İletişim | Microvend");
+  usePageTitle(
+    "İletişim | Microvend",
+    "Kullanıcılar ve mikro işletmeler için iletişim bilgileri ve başvuru yönlendirmesi."
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">

@@ -12,7 +12,8 @@ import usePageTitle from "../hooks/usePageTitle";
 
 function HomePage() {
   usePageTitle(
-    "Microvend | Bağımsız üreticiler ve küçük işletmeler rehberi"
+    "Microvend | Bağımsız üreticiler ve küçük işletmeler rehberi",
+    "Bağımsız üreticileri ve mikro işletmeleri kategori, şehir ve ürüne göre keşfet. Komisyonsuz, düzenli ve güvenilir bir keşif rehberi."
   );
 
   return (

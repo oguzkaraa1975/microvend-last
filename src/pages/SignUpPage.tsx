@@ -13,7 +13,10 @@ const emailGecerliMi = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 function SignUpPage() {
-  usePageTitle("Üye Ol | Microvend");
+  usePageTitle(
+    "Üye Ol | Microvend",
+    "Microvend'e üye ol; favori işletmelerini kaydet, mikro işletmeleri takip et."
+  );
 
   const { user, loading: authLoading } = useAuth();
 
